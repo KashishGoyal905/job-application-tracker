@@ -20,12 +20,32 @@ const dummyApplications = [
     status: "Rejected",
     appliedDate: "12 May 2026",
   },
+  {
+    id: 4,
+    company: "Netflix",
+    role: "frontend Developer",
+    status: "Rejected",
+    appliedDate: "12 May 2026",
+  },
+  {
+    id: 5,
+    company: "Netflix",
+    role: "frontend Developer",
+    status: "Rejected",
+    appliedDate: "12 May 2026",
+  },
+  {
+    id: 6,
+    company: "Netflix",
+    role: "frontend Developer",
+    status: "Rejected",
+    appliedDate: "12 May 2026",
+  },
 ];
 
 function ApplicationsTable() {
   return (
     <div className="rounded-xl border bg-white p-6 shadow-sm">
-        
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-xl font-semibold text-slate-800">
           Recent Applications
@@ -38,7 +58,7 @@ function ApplicationsTable() {
       <div className="overflow-x-auto">
         <table className="w-full border-collapse">
           <thead>
-            <tr className="border-b text-left">
+            <tr className="text-left">
               <th className="pb-3 text-sm font-semibold text-slate-500">
                 Company
               </th>
@@ -56,7 +76,7 @@ function ApplicationsTable() {
 
           <tbody>
             {dummyApplications.map((application) => (
-              <tr key={application.id}>
+              <tr key={application.id} className="border-t border-slate-200">
                 <td className="py-4 font-medium text-slate-800">
                   {application.company}
                 </td>
