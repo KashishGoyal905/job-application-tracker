@@ -45,9 +45,9 @@ const dummyApplications = [
 
 function ApplicationsTable() {
   return (
-    <div className="rounded-xl border bg-white p-6 shadow-sm">
+    <div className="rounded-xl border bg-white dark:bg-slate-900 p-6 shadow-sm">
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-slate-800">
+        <h2 className="text-xl font-semibold text-slate-800 dark:text-white">
           Recent Applications
         </h2>
         <button className="rounded-lg bg-indigo-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-600">
@@ -59,16 +59,16 @@ function ApplicationsTable() {
         <table className="w-full border-collapse">
           <thead>
             <tr className="text-left">
-              <th className="pb-3 text-sm font-semibold text-slate-500">
+              <th className="pb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
                 Company
               </th>
-              <th className="pb-3 text-sm font-semibold text-slate-500">
+              <th className="pb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
                 Role
               </th>
-              <th className="pb-3 text-sm font-semibold text-slate-500">
+              <th className="pb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
                 Status
               </th>
-              <th className="pb-3 text-sm font-semibold text-slate-500">
+              <th className="pb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
                 Applied
               </th>
             </tr>
@@ -76,26 +76,26 @@ function ApplicationsTable() {
 
           <tbody>
             {dummyApplications.map((application) => (
-              <tr key={application.id} className="border-t border-slate-200">
-                <td className="py-4 font-medium text-slate-800">
+              <tr key={application.id} className="border-t border-slate-200 dark:border-slate-700">
+                <td className="py-4 font-medium text-slate-800 dark:text-white">
                   {application.company}
                 </td>
-                <td className="py-4 text-slate-600">{application.role}</td>
+                <td className="py-4 text-slate-600 dark:text-slate-400">{application.role}</td>
                 <td className="py-4">
                   <span
                     className={`rounded-full px-3 py-1 text-xs font-medium 
                         ${
                           application.status === "Interview"
-                            ? "bg-yellow-100 text-yellow-700"
+                            ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400"
                             : application.status === "Applied"
-                              ? "bg-blue-100 text-blue-700"
-                              : "bg-red-100 text-red-700"
+                              ? "bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400"
+                              : "bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400"
                         }`}
                   >
                     {application.status}
                   </span>
                 </td>
-                <td className="py-4 text-slate-600">
+                <td className="py-4 text-slate-600 dark:text-slate-400">
                   {application.appliedDate}
                 </td>
               </tr>
