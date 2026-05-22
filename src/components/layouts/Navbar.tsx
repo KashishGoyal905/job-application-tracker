@@ -1,13 +1,28 @@
+"use client";
+
 import { Search } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
+import { usePathname } from "next/navigation";
 
 function Navbar() {
+
+  const pathname = usePathname();
+
+  const pageTitles: Record<string, string> = {
+    "/": "Dashboard",
+    "/applications": "Applications",
+    "/interviews": "Interviews",
+    "/resume": "Resume",
+    "/analytics": "Analytics",
+  }
+
+  const currentTitle = pageTitles[pathname] || "Dashboard";
   return (
     <header className="flex items-center justify-between border-b bg-white dark:bg-slate-900 px-6 py-4">
       {/* Left Side*/}
       <div>
         <h2 className="text-2xl font-semibold text-slate-800 dark:text-white">
-          Dashboard
+          {currentTitle}
         </h2>
         <p className="text-sm text-slate-500 dark:text-slate-400">
           Track you job application easily
@@ -29,7 +44,6 @@ function Navbar() {
           K
         </div>
       </div>
-      
     </header>
   );
 }
