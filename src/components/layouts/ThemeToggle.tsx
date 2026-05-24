@@ -17,7 +17,6 @@ function ThemeToggle() {
   }
 
   const isDarkTheme = theme === "dark";
-
   function toggleTheme() {
     setTheme(isDarkTheme ? "light" : "dark");
   }

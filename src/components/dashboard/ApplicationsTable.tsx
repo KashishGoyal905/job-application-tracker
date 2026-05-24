@@ -2,67 +2,19 @@
 
 import { useState } from "react";
 import ApplicationModal from "./ApplicationModal";
-
-
-const dummyApplications = [
-  {
-    id: 1,
-    company: "Google",
-    role: "Frontend Developer",
-    status: "Interview" as const,
-    appliedDate: "12 May 2026",
-  },
-  {
-    id: 2,
-    company: "Microsoft",
-    role: "Frontend Developer",
-    status: "Applied" as const,
-    appliedDate: "12 May 2026",
-  },
-  {
-    id: 3,
-    company: "Netflix",
-    role: "Frontend Developer",
-    status: "Rejected" as const,
-    appliedDate: "12 May 2026",
-  },
-  {
-    id: 4,
-    company: "Netflix",
-    role: "Frontend Developer",
-    status: "Rejected" as const,
-    appliedDate: "12 May 2026",
-  },
-  {
-    id: 5,
-    company: "Netflix",
-    role: "Frontend Developer",
-    status: "Rejected" as const,
-    appliedDate: "12 May 2026",
-  },
-  {
-    id: 6,
-    company: "Netflix",
-    role: "Frontend Developer",
-    status: "Rejected" as const,
-    appliedDate: "12 May 2026",
-  },
-];
+import { useApplicationStore } from "@/store/applicationsStore";
+import { ApplicationStatusType, ApplicationType } from "@/types/application";
 
 function ApplicationsTable() {
-  const [applications, setApplications] = useState(dummyApplications);
+  const applications = useApplicationStore((state) => state.applications);
+  const addApplication = useApplicationStore((state) => state.addApplications);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   function handleNewApplicationClick() {
     setIsModalOpen(true);
   }
 
-  function handleAddApplication(newApp: {
-    company: string;
-    role: string;
-    status: "Applied" | "Rejected" | "Interview";
-    appliedDate: string;
-  }) {
+  function handleAddApplication(newApp: Omit<ApplicationType, "id">) {
     // Format input date "YYYY-MM-DD" to "D MMM YYYY"
     const date = new Date(newApp.appliedDate);
     const formattedDate = isNaN(date.getTime())
@@ -73,16 +25,12 @@ function ApplicationsTable() {
           year: "numeric",
         });
 
-    setApplications((prev) => [
-      {
-        id: prev.length + 1,
-        company: newApp.company,
-        role: newApp.role,
-        status: newApp.status,
-        appliedDate: formattedDate,
-      },
-      ...prev,
-    ]);
+    addApplication({
+      company: newApp.company,
+      role: newApp.role,
+      status: newApp.status,
+      appliedDate: formattedDate,
+    });
   }
 
   return (
