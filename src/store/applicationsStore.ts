@@ -1,5 +1,6 @@
 import { ApplicationType } from "@/types/application"
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 type ApplicationStore = {
     applications: ApplicationType[];
@@ -51,16 +52,21 @@ const dummyApplications: ApplicationType[] = [
     },
 ];
 
-export const useApplicationStore = create<ApplicationStore>((set) => ({
-    applications: dummyApplications,
-    addApplications: (application) => set((state) => ({
-        applications: [
-            {
-                id: state.applications.length + 1,
-                ...application,
-            },
-            ...state.applications,
-        ] 
-    }))
-}))
+export const useApplicationStore = create<ApplicationStore>()(
+    persist(
+        (set) => ({
+            applications: dummyApplications,
+            addApplications: (application) => set((state) => ({
+                applications: [
+                    {
+                        id: state.applications.length + 1,
+                        ...application,
+                    },
+                    ...state.applications,
+                ]
+            })),
+        }),
+        { name: "application-storage" }
+    )
+);
 

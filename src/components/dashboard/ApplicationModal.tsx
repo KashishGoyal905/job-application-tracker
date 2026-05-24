@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { X } from "lucide-react";
+import { ApplicationStatusType } from "@/types/application";
 
 type ApplicationModalProps = {
   isOpen: boolean;
@@ -9,7 +10,7 @@ type ApplicationModalProps = {
   onSubmit: (data: {
     company: string;
     role: string;
-    status: "Applied" | "Rejected" | "Interview";
+    status: ApplicationStatusType;
     appliedDate: string;
   }) => void;
 };
@@ -21,9 +22,7 @@ function ApplicationModal({
 }: ApplicationModalProps) {
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
-  const [status, setStatus] = useState<"Applied" | "Rejected" | "Interview">(
-    "Applied",
-  );
+  const [status, setStatus] = useState<ApplicationStatusType>("Applied");
   const [appliedDate, setAppliedDate] = useState("");
 
   function handleModalSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -109,35 +108,40 @@ function ApplicationModal({
             <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
               Status
             </label>
-            <div className="grid grid-cols-3 gap-2">
-              {(["Applied", "Interview", "Rejected"] as const).map((s) => {
-                const isActive = status === s;
-                let activeStyle = "";
-                if (isActive) {
-                  if (s === "Applied")
-                    activeStyle =
-                      "bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800";
-                  if (s === "Interview")
-                    activeStyle =
-                      "bg-yellow-100 text-yellow-700 border-yellow-300 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800";
-                  if (s === "Rejected")
-                    activeStyle =
-                      "bg-red-100 text-red-700 border-red-300 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800";
-                }
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              {(["Applied", "Interview", "Offer", "Rejected"] as const).map(
+                (s) => {
+                  const isActive = status === s;
+                  let activeStyle = "";
+                  if (isActive) {
+                    if (s === "Applied")
+                      activeStyle =
+                        "bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800";
+                    if (s === "Interview")
+                      activeStyle =
+                        "bg-yellow-100 text-yellow-700 border-yellow-300 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800";
+                    if (s === "Offer")
+                      activeStyle =
+                        "bg-green-100 text-green-700 border-green-300 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800";
+                    if (s === "Rejected")
+                      activeStyle =
+                        "bg-red-100 text-red-700 border-red-300 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800";
+                  }
 
-                return (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => setStatus(s)}
-                    className={`rounded-lg border px-3 py-2 text-xs font-medium transition text-center cursor-pointer
+                  return (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => setStatus(s)}
+                      className={`rounded-lg border px-3 py-2 text-xs font-medium transition text-center cursor-pointer
                       ${isActive ? activeStyle : "border-slate-200 text-slate-500 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800"}
                     `}
-                  >
-                    {s}
-                  </button>
-                );
-              })}
+                    >
+                      {s}
+                    </button>
+                  );
+                },
+              )}
             </div>
           </div>
 

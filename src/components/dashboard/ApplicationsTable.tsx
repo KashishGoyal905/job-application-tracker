@@ -3,7 +3,7 @@
 import { useState } from "react";
 import ApplicationModal from "./ApplicationModal";
 import { useApplicationStore } from "@/store/applicationsStore";
-import { ApplicationStatusType, ApplicationType } from "@/types/application";
+import { ApplicationType } from "@/types/application";
 
 function ApplicationsTable() {
   const applications = useApplicationStore((state) => state.applications);
@@ -81,16 +81,20 @@ function ApplicationsTable() {
                   </td>
                   <td className="py-4">
                     <span
-                      className={`rounded-full px-3 py-1 text-xs font-medium 
+                      className={`rounded-full px-3 py-1 text-xs font-medium
                         ${
                           application.status === "Interview"
-                            ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400"
+                            ? "bg-yellow-100 text-yellow-700 border-b border-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-400"
                             : application.status === "Applied"
-                              ? "bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400"
-                              : "bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400"
+                              ? "bg-blue-100 text-blue-700 border-b border-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
+                              : application.status === "Offer"
+                                ? "bg-green-100 text-green-700 border-b border-green-600 dark:bg-green-900/20 dark:text-green-400"
+                                : "bg-red-100 text-red-700 border-b border-red-600 dark:bg-red-900/20 dark:text-red-400"
                         }`}
                     >
-                      {application.status}
+                      {application.status === "Offer"
+                        ? "Offered"
+                        : application.status}
                     </span>
                   </td>
                   <td className="py-4 text-slate-600 dark:text-slate-400">
