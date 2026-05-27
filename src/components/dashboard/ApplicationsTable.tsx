@@ -4,6 +4,7 @@ import { useState } from "react";
 import ApplicationModal from "./ApplicationModal";
 import { useApplicationStore } from "@/store/applicationsStore";
 import { ApplicationType } from "@/types/application";
+import EmptyState from "../ui/EmptyState";
 
 function ApplicationsTable() {
   const applications = useApplicationStore((state) => state.applications);
@@ -49,39 +50,47 @@ function ApplicationsTable() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="text-left">
-                <th className="pb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
-                  Company
-                </th>
-                <th className="pb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
-                  Role
-                </th>
-                <th className="pb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
-                  Status
-                </th>
-                <th className="pb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
-                  Applied
-                </th>
-              </tr>
-            </thead>
+          {applications.length === 0 ? (
+            <EmptyState
+              title="No applications yet"
+              description="Get started by adding your first job application."
+              buttonText="Add First Application"
+              onClick={handleNewApplicationClick}
+            />
+          ) : (
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="text-left">
+                  <th className="pb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
+                    Company
+                  </th>
+                  <th className="pb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
+                    Role
+                  </th>
+                  <th className="pb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
+                    Status
+                  </th>
+                  <th className="pb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
+                    Applied
+                  </th>
+                </tr>
+              </thead>
 
-            <tbody>
-              {applications.map((application) => (
-                <tr
-                  key={application.id}
-                  className="border-t border-slate-200 dark:border-slate-700"
-                >
-                  <td className="py-4 font-medium text-slate-800 dark:text-white">
-                    {application.company}
-                  </td>
-                  <td className="py-4 text-slate-600 dark:text-slate-400">
-                    {application.role}
-                  </td>
-                  <td className="py-4">
-                    <span
-                      className={`rounded-full px-3 py-1 text-xs font-medium
+              <tbody>
+                {applications.map((application) => (
+                  <tr
+                    key={application.id}
+                    className="border-t border-slate-200 dark:border-slate-700"
+                  >
+                    <td className="py-4 font-medium text-slate-800 dark:text-white">
+                      {application.company}
+                    </td>
+                    <td className="py-4 text-slate-600 dark:text-slate-400">
+                      {application.role}
+                    </td>
+                    <td className="py-4">
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-medium
                         ${
                           application.status === "Interview"
                             ? "bg-yellow-100 text-yellow-700 border-b border-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-400"
@@ -91,19 +100,20 @@ function ApplicationsTable() {
                                 ? "bg-green-100 text-green-700 border-b border-green-600 dark:bg-green-900/20 dark:text-green-400"
                                 : "bg-red-100 text-red-700 border-b border-red-600 dark:bg-red-900/20 dark:text-red-400"
                         }`}
-                    >
-                      {application.status === "Offer"
-                        ? "Offered"
-                        : application.status}
-                    </span>
-                  </td>
-                  <td className="py-4 text-slate-600 dark:text-slate-400">
-                    {application.appliedDate}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                      >
+                        {application.status === "Offer"
+                          ? "Offered"
+                          : application.status}
+                      </span>
+                    </td>
+                    <td className="py-4 text-slate-600 dark:text-slate-400">
+                      {application.appliedDate}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
       <ApplicationModal
