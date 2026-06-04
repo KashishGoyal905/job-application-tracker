@@ -5,10 +5,15 @@ import ApplicationModal from "./ApplicationModal";
 import { useApplicationStore } from "@/store/applicationsStore";
 import { ApplicationType } from "@/types/application";
 import EmptyState from "../ui/EmptyState";
+import { Pencil, Trash2 } from "lucide-react";
 
 function ApplicationsTable() {
   const applications = useApplicationStore((state) => state.applications);
-  const addApplication = useApplicationStore((state) => state.addApplications);
+  const addApplication = useApplicationStore((state) => state.addApplication);
+  const editApplication = useApplicationStore((state) => state.editApplication);
+  const deleteApplication = useApplicationStore(
+    (state) => state.deleteApplication,
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   function handleNewApplicationClick() {
@@ -32,6 +37,15 @@ function ApplicationsTable() {
       status: newApp.status,
       appliedDate: formattedDate,
     });
+  }
+
+  function handleEditApplication(id: number) {
+    console.log(id);
+  }
+
+  function handleDeleteApplication(id: number) {
+    deleteApplication(id);
+    console.log(applications);
   }
 
   return (
@@ -73,6 +87,9 @@ function ApplicationsTable() {
                   <th className="pb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
                     Applied
                   </th>
+                  <th className="pb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
+                    Actions
+                  </th>
                 </tr>
               </thead>
 
@@ -108,6 +125,24 @@ function ApplicationsTable() {
                     </td>
                     <td className="py-4 text-slate-600 dark:text-slate-400">
                       {application.appliedDate}
+                    </td>
+                    <td className="py-4">
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleEditApplication(application.id)}
+                          className="rounded-full cursor-pointer p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+                        >
+                          <Pencil size={16} />
+                        </button>
+                        <button
+                          onClick={() =>
+                            handleDeleteApplication(application.id)
+                          }
+                          className="rounded-full cursor-pointer p-2 text-red-500 transition hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

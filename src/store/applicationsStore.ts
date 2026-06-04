@@ -4,7 +4,10 @@ import { persist } from "zustand/middleware";
 
 type ApplicationStore = {
     applications: ApplicationType[];
-    addApplications: (application: Omit<ApplicationType, "id">) => void;
+    addApplication: (application: Omit<ApplicationType, "id">) => void;
+    editApplication: (id: number, application: Omit<ApplicationType, "id">) => void;
+    deleteApplication: (id: number) => void;
+    getApplication: (id: number) => ApplicationType | undefined;
 }
 
 // const dummyApplications: ApplicationType[] = [
@@ -54,17 +57,26 @@ type ApplicationStore = {
 
 export const useApplicationStore = create<ApplicationStore>()(
     persist(
-        (set) => ({
+        (set, get) => ({
             applications: [],
-            addApplications: (application) => set((state) => ({
+            addApplication: (application) => set((state) => ({
                 applications: [
                     {
-                        id: state.applications.length + 1,
+                        id: Math.random() * 100000,
                         ...application,
                     },
                     ...state.applications,
                 ]
             })),
+            editApplication: (id, application) => set((state) => ({
+                applications: state.applications.map((app) =>
+                    app.id === id ? { ...app, ...application } : app
+                )
+            })),
+            deleteApplication: (id) => set((state) => ({
+                applications: state.applications.filter((app) => app.id !== id)
+            })),
+            getApplication: (id) => get().applications.find((app) => app.id === id)
         }),
         { name: "application-storage" }
     )
