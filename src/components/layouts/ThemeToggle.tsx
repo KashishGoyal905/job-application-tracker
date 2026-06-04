@@ -5,6 +5,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
 function ThemeToggle() {
+  // To prevent hydration error
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
 
@@ -12,6 +13,7 @@ function ThemeToggle() {
     setMounted(true);
   }, []);
 
+  // To prevent hydration error
   if (!mounted) {
     return null;
   }

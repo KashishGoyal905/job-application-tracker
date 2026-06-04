@@ -27,7 +27,7 @@ export default function EmptyState({
       {buttonText && onClick && (
         <button
           onClick={onClick}
-          className="mt-6 rounded-lg bg-indigo-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-600"
+          className="mt-6 cursor-pointer rounded-lg bg-indigo-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-600"
         >
           {buttonText}
         </button>

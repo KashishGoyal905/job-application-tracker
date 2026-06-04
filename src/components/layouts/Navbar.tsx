@@ -5,7 +5,6 @@ import ThemeToggle from "./ThemeToggle";
 import { usePathname } from "next/navigation";
 
 function Navbar() {
-
   const pathname = usePathname();
 
   const pageTitles: Record<string, string> = {
@@ -14,7 +13,8 @@ function Navbar() {
     "/interviews": "Interviews",
     "/resume": "Resume",
     "/analytics": "Analytics",
-  }
+    "/settings": "Settings",
+  };
 
   const currentTitle = pageTitles[pathname] || "Dashboard";
   return (
@@ -25,7 +25,7 @@ function Navbar() {
           {currentTitle}
         </h2>
         <p className="text-sm text-slate-500 dark:text-slate-400">
-          Track you job application easily
+          Track you job applications and interviews easily
         </p>
       </div>
 

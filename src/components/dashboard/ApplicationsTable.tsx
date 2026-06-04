@@ -43,7 +43,7 @@ function ApplicationsTable() {
           </h2>
           <button
             onClick={handleNewApplicationClick}
-            className="rounded-lg bg-indigo-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-600"
+            className="rounded-lg cursor-pointer bg-indigo-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-600"
           >
             Add New
           </button>
