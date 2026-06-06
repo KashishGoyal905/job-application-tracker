@@ -7,12 +7,21 @@ import { ApplicationType } from "@/types/application";
 import EmptyState from "../ui/EmptyState";
 import { Pencil, Trash2 } from "lucide-react";
 
-function ApplicationsTable() {
+type AppliationTableProps = {
+  searchQuery: string;
+  statusFilter: string;
+};
+
+function ApplicationsTable({
+  searchQuery,
+  statusFilter,
+}: AppliationTableProps) {
   const applications = useApplicationStore((state) => state.applications);
   const addApplication = useApplicationStore((state) => state.addApplication);
   const deleteApplication = useApplicationStore(
     (state) => state.deleteApplication,
   );
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingApplication, setEditingApplication] =
     useState<ApplicationType | null>(null);
@@ -51,6 +60,22 @@ function ApplicationsTable() {
     console.log(applications);
   }
 
+  let searchApplications = applications;
+  if (searchQuery !== "") {
+    searchApplications = applications.filter(
+      (app) =>
+        app.company.toLowerCase().includes(searchQuery?.toLowerCase()) ||
+        app.role.toLowerCase().includes(searchQuery?.toLowerCase()),
+    );
+  }
+
+  let filteredApplications = searchApplications;
+  if (statusFilter !== "") {
+    filteredApplications = searchApplications.filter(
+      (app) => app.status.toLowerCase() === statusFilter.toLowerCase(),
+    );
+  }
+
   return (
     <>
       <div className="rounded-xl border bg-white dark:bg-slate-900 p-6 shadow-sm">
@@ -67,7 +92,7 @@ function ApplicationsTable() {
         </div>
 
         <div className="overflow-x-auto">
-          {applications.length === 0 ? (
+          {filteredApplications.length === 0 ? (
             <EmptyState
               title="No applications yet"
               description="Get started by adding your first job application."
@@ -97,7 +122,7 @@ function ApplicationsTable() {
               </thead>
 
               <tbody>
-                {applications.map((application) => (
+                {filteredApplications.map((application) => (
                   <tr
                     key={application.id}
                     className="border-t border-slate-200 dark:border-slate-700"

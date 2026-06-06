@@ -82,12 +82,12 @@ export default function Home() {
         </div>
 
         {/* Applications */}
-        <div>
+        {/* <div>
           {isLoading ?
            <ApplicationTableSkeleton />
             :
             <ApplicationsTable />}
-        </div>
+        </div> */}
       </div>
     </DashboardLayout>
   );
