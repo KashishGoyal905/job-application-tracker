@@ -10,13 +10,15 @@ import { Pencil, Trash2 } from "lucide-react";
 function ApplicationsTable() {
   const applications = useApplicationStore((state) => state.applications);
   const addApplication = useApplicationStore((state) => state.addApplication);
-  const editApplication = useApplicationStore((state) => state.editApplication);
   const deleteApplication = useApplicationStore(
     (state) => state.deleteApplication,
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingApplication, setEditingApplication] =
+    useState<ApplicationType | null>(null);
 
   function handleNewApplicationClick() {
+    setEditingApplication(null);
     setIsModalOpen(true);
   }
 
@@ -39,8 +41,9 @@ function ApplicationsTable() {
     });
   }
 
-  function handleEditApplication(id: number) {
-    console.log(id);
+  function handleEditApplication(application: ApplicationType) {
+    setEditingApplication(application);
+    setIsModalOpen(true);
   }
 
   function handleDeleteApplication(id: number) {
@@ -129,7 +132,7 @@ function ApplicationsTable() {
                     <td className="py-4">
                       <div className="flex items-center gap-2">
                         <button
-                          onClick={() => handleEditApplication(application.id)}
+                          onClick={() => handleEditApplication(application)}
                           className="rounded-full cursor-pointer p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
                         >
                           <Pencil size={16} />
@@ -153,8 +156,12 @@ function ApplicationsTable() {
       </div>
       <ApplicationModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingApplication(null);
+        }}
         onSubmit={handleAddApplication}
+        application={editingApplication}
       />
     </>
   );

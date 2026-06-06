@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { X } from "lucide-react";
-import { ApplicationStatusType } from "@/types/application";
+import { ApplicationStatusType, ApplicationType } from "@/types/application";
+import { useApplicationStore } from "@/store/applicationsStore";
 
 type ApplicationModalProps = {
   isOpen: boolean;
@@ -13,17 +14,45 @@ type ApplicationModalProps = {
     status: ApplicationStatusType;
     appliedDate: string;
   }) => void;
+  application: ApplicationType | null;
 };
 
 function ApplicationModal({
   isOpen,
   onClose,
   onSubmit,
+  application,
 }: ApplicationModalProps) {
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
   const [status, setStatus] = useState<ApplicationStatusType>("Applied");
   const [appliedDate, setAppliedDate] = useState("");
+
+  const editApplication = useApplicationStore((state) => state.editApplication);
+
+  useEffect(() => {
+    if (application) {
+      setCompany(application.company);
+      setRole(application.role);
+      setStatus(application.status);
+
+      // Format date from "12 May 2026" to "YYYY-MM-DD" for the HTML5 date input
+      const date = new Date(application.appliedDate);
+      if (!isNaN(date.getTime())) {
+        const yyyy = date.getFullYear();
+        const mm = String(date.getMonth() + 1).padStart(2, "0");
+        const dd = String(date.getDate()).padStart(2, "0");
+        setAppliedDate(`${yyyy}-${mm}-${dd}`);
+      } else {
+        setAppliedDate("");
+      }
+    } else {
+      setCompany("");
+      setRole("");
+      setStatus("Applied");
+      setAppliedDate("");
+    }
+  }, [application]);
 
   function handleModalSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -50,6 +79,31 @@ function ApplicationModal({
     onClose();
   }
 
+  function handleEditApplication() {
+    if (!application) {
+      return;
+    }
+
+    // Format input date "YYYY-MM-DD" to "D MMM YYYY"
+    const date = new Date(appliedDate);
+    const formattedDate = isNaN(date.getTime())
+      ? appliedDate
+      : date.toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        });
+
+    const updatedApplication = {
+      company,
+      role,
+      status,
+      appliedDate: formattedDate,
+    };
+    editApplication(application.id, updatedApplication);
+    onClose();
+  }
+
   if (!isOpen) {
     return null;
   }
@@ -61,7 +115,7 @@ function ApplicationModal({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4 mb-4">
           <h2 className="text-xl font-semibold text-slate-800 dark:text-white">
-            Add New Application
+            {application ? "Edit Application" : "Add New Application"}
           </h2>
           <button
             onClick={onClose}
@@ -168,12 +222,21 @@ function ApplicationModal({
             >
               Cancel
             </button>
-            <button
-              type="submit"
-              className="rounded-lg bg-indigo-500 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-600 active:scale-[0.98] transition cursor-pointer"
-            >
-              Add Application
-            </button>
+            {application ? (
+              <button
+                onClick={handleEditApplication}
+                className="rounded-lg bg-indigo-500 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-600 active:scale-[0.98] transition cursor-pointer"
+              >
+                Update Application
+              </button>
+            ) : (
+              <button
+                type="submit"
+                className="rounded-lg bg-indigo-500 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-600 active:scale-[0.98] transition cursor-pointer"
+              >
+                Add Application
+              </button>
+            )}
           </div>
         </form>
       </div>
