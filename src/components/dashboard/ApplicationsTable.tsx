@@ -4,8 +4,11 @@ import { useState } from "react";
 import ApplicationModal from "./ApplicationModal";
 import { useApplicationStore } from "@/store/applicationsStore";
 import { ApplicationType } from "@/types/application";
-import EmptyState from "../ui/EmptyState";
+import EmptyState from "../shared/EmptyState";
 import { Pencil, Trash2 } from "lucide-react";
+import { Button } from "../ui/button";
+import { toast } from "sonner";
+import DeleteConfirmationDialog from "../dialogs/DeleteConfirmationDialog";
 
 type AppliationTableProps = {
   searchQuery: string;
@@ -23,6 +26,8 @@ function ApplicationsTable({
   );
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [applicationToDelete, setApplicationToDelete] =
+    useState<ApplicationType | null>(null);
   const [editingApplication, setEditingApplication] =
     useState<ApplicationType | null>(null);
 
@@ -48,6 +53,8 @@ function ApplicationsTable({
       status: newApp.status,
       appliedDate: formattedDate,
     });
+
+    toast.success("Application added successfully");
   }
 
   function handleEditApplication(application: ApplicationType) {
@@ -55,9 +62,15 @@ function ApplicationsTable({
     setIsModalOpen(true);
   }
 
-  function handleDeleteApplication(id: number) {
-    deleteApplication(id);
-    console.log(applications);
+  function handleDeleteApplicationConfirm() {
+    if (!applicationToDelete) return;
+    deleteApplication(applicationToDelete.id);
+    toast.success("Application deleted successfully");
+    setApplicationToDelete(null);
+  }
+
+  function handleDeleteApplicationCancel() {
+    setApplicationToDelete(null);
   }
 
   let searchApplications = applications;
@@ -70,7 +83,7 @@ function ApplicationsTable({
   }
 
   let filteredApplications = searchApplications;
-  if (statusFilter !== "") {
+  if (statusFilter !== "All") {
     filteredApplications = searchApplications.filter(
       (app) => app.status.toLowerCase() === statusFilter.toLowerCase(),
     );
@@ -83,12 +96,7 @@ function ApplicationsTable({
           <h2 className="text-xl font-semibold text-slate-800 dark:text-white">
             Recent Applications
           </h2>
-          <button
-            onClick={handleNewApplicationClick}
-            className="rounded-lg cursor-pointer bg-indigo-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-600"
-          >
-            Add New
-          </button>
+          <Button onClick={handleNewApplicationClick}>Add New</Button>
         </div>
 
         <div className="overflow-x-auto">
@@ -163,9 +171,7 @@ function ApplicationsTable({
                           <Pencil size={16} />
                         </button>
                         <button
-                          onClick={() =>
-                            handleDeleteApplication(application.id)
-                          }
+                          onClick={() => setApplicationToDelete(application)}
                           className="rounded-full cursor-pointer p-2 text-red-500 transition hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20"
                         >
                           <Trash2 size={16} />
@@ -187,6 +193,12 @@ function ApplicationsTable({
         }}
         onSubmit={handleAddApplication}
         application={editingApplication}
+      />
+      <DeleteConfirmationDialog
+        isOpen={!!applicationToDelete}
+        onClose={handleDeleteApplicationCancel}
+        onConfirm={handleDeleteApplicationConfirm}
+        companyName={applicationToDelete?.company || ""}
       />
     </>
   );

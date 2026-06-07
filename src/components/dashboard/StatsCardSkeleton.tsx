@@ -1,4 +1,4 @@
-import Skeleton from "../ui/Skeleton";
+import Skeleton from "../shared/Skeleton";
 
 export default function StatsCardSkeleton() {
   return (
