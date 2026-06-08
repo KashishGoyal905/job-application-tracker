@@ -65,7 +65,7 @@ function ApplicationsTable({
   function handleDeleteApplicationConfirm() {
     if (!applicationToDelete) return;
     deleteApplication(applicationToDelete.id);
-    toast.success("Application deleted successfully");
+    toast.success(`Deleted ${applicationToDelete.company} successfully`);
     setApplicationToDelete(null);
   }
 

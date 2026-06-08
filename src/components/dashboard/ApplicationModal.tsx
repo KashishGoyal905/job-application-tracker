@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import { ApplicationStatusType, ApplicationType } from "@/types/application";
 import { useApplicationStore } from "@/store/applicationsStore";
 import { Button } from "../ui/button";
+import { toast } from "sonner";
 
 type ApplicationModalProps = {
   isOpen: boolean;
@@ -103,6 +104,7 @@ function ApplicationModal({
     };
     editApplication(application.id, updatedApplication);
     onClose();
+    toast.success("Application updated successfully");
   }
 
   if (!isOpen) {
