@@ -6,23 +6,17 @@ import { ApplicationStatusType, ApplicationType } from "@/types/application";
 import { useApplicationStore } from "@/store/applicationsStore";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
+import { formatDate } from "@/utils/date";
 
 type ApplicationModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: {
-    company: string;
-    role: string;
-    status: ApplicationStatusType;
-    appliedDate: string;
-  }) => void;
   application: ApplicationType | null;
 };
 
 function ApplicationModal({
   isOpen,
   onClose,
-  onSubmit,
   application,
 }: ApplicationModalProps) {
   const [company, setCompany] = useState("");
@@ -31,6 +25,7 @@ function ApplicationModal({
   const [appliedDate, setAppliedDate] = useState("");
 
   const editApplication = useApplicationStore((state) => state.editApplication);
+  const addApplication = useApplicationStore((state) => state.addApplication);
 
   useEffect(() => {
     if (application) {
@@ -60,51 +55,34 @@ function ApplicationModal({
     event.preventDefault();
 
     if (!company.trim() || !role.trim() || !appliedDate.trim()) {
+      toast.error("Please fill all the required fields");
       return;
     }
 
-    // Format date beautifully if needed, or pass it directly
-    onSubmit({
-      company,
-      role,
-      status,
-      appliedDate,
-    });
+    if (!application) {
+      addApplication({
+        company,
+        role,
+        status,
+        appliedDate: formatDate(appliedDate),
+      });
 
-    // Reset state
-    setCompany("");
-    setRole("");
-    setStatus("Applied");
-    setAppliedDate("");
+      toast.success(`${company} application added successfully`);
+    } else {
+      const updatedApplication = {
+        company,
+        role,
+        status,
+        appliedDate: formatDate(appliedDate),
+      };
+
+      editApplication(application.id, updatedApplication);
+
+      toast.success(`${company} application updated successfully`);
+    }
 
     // Close modal
     onClose();
-  }
-
-  function handleEditApplication() {
-    if (!application) {
-      return;
-    }
-
-    // Format input date "YYYY-MM-DD" to "D MMM YYYY"
-    const date = new Date(appliedDate);
-    const formattedDate = isNaN(date.getTime())
-      ? appliedDate
-      : date.toLocaleDateString("en-GB", {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-        });
-
-    const updatedApplication = {
-      company,
-      role,
-      status,
-      appliedDate: formattedDate,
-    };
-    editApplication(application.id, updatedApplication);
-    onClose();
-    toast.success("Application updated successfully");
   }
 
   if (!isOpen) {
@@ -225,18 +203,9 @@ function ApplicationModal({
             >
               Cancel
             </button>
-            {application ? (
-              <Button
-                onClick={handleEditApplication}
-                className="active:scale-[0.98] transition"
-              >
-                Update Application
-              </Button>
-            ) : (
-              <Button type="submit" className="active:scale-[0.98] transition">
-                Add Application
-              </Button>
-            )}
+            <Button type="submit" className="active:scale-[0.98] transition">
+              {application ? "Update Application" : "Add Application"}
+            </Button>
           </div>
         </form>
       </div>

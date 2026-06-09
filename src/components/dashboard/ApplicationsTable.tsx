@@ -36,26 +36,26 @@ function ApplicationsTable({
     setIsModalOpen(true);
   }
 
-  function handleAddApplication(newApp: Omit<ApplicationType, "id">) {
-    // Format input date "YYYY-MM-DD" to "D MMM YYYY"
-    const date = new Date(newApp.appliedDate);
-    const formattedDate = isNaN(date.getTime())
-      ? newApp.appliedDate
-      : date.toLocaleDateString("en-GB", {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-        });
+  // function handleAddApplication(newApp: Omit<ApplicationType, "id">) {
+  //   // Format input date "YYYY-MM-DD" to "D MMM YYYY"
+  //   const date = new Date(newApp.appliedDate);
+  //   const formattedDate = isNaN(date.getTime())
+  //     ? newApp.appliedDate
+  //     : date.toLocaleDateString("en-GB", {
+  //         day: "numeric",
+  //         month: "short",
+  //         year: "numeric",
+  //       });
 
-    addApplication({
-      company: newApp.company,
-      role: newApp.role,
-      status: newApp.status,
-      appliedDate: formattedDate,
-    });
+  //   addApplication({
+  //     company: newApp.company,
+  //     role: newApp.role,
+  //     status: newApp.status,
+  //     appliedDate: formattedDate,
+  //   });
 
-    toast.success("Application added successfully");
-  }
+  //   toast.success("Application added successfully");
+  // }
 
   function handleEditApplication(application: ApplicationType) {
     setEditingApplication(application);
@@ -191,7 +191,7 @@ function ApplicationsTable({
           setIsModalOpen(false);
           setEditingApplication(null);
         }}
-        onSubmit={handleAddApplication}
+        // onSubmit={handleAddApplication}
         application={editingApplication}
       />
       <DeleteConfirmationDialog
