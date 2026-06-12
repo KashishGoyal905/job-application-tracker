@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ApplicationModal from "./ApplicationModal";
 import { useApplicationStore } from "@/store/applicationsStore";
 import { ApplicationType } from "@/types/application";
@@ -20,7 +20,6 @@ function ApplicationsTable({
   statusFilter,
 }: AppliationTableProps) {
   const applications = useApplicationStore((state) => state.applications);
-  const addApplication = useApplicationStore((state) => state.addApplication);
   const deleteApplication = useApplicationStore(
     (state) => state.deleteApplication,
   );
@@ -31,31 +30,14 @@ function ApplicationsTable({
   const [editingApplication, setEditingApplication] =
     useState<ApplicationType | null>(null);
 
+
+  const ITEMS_PER_PAGE = 5;
+  const [currentPage, setCurrentPage] = useState(1);
+
   function handleNewApplicationClick() {
     setEditingApplication(null);
     setIsModalOpen(true);
   }
-
-  // function handleAddApplication(newApp: Omit<ApplicationType, "id">) {
-  //   // Format input date "YYYY-MM-DD" to "D MMM YYYY"
-  //   const date = new Date(newApp.appliedDate);
-  //   const formattedDate = isNaN(date.getTime())
-  //     ? newApp.appliedDate
-  //     : date.toLocaleDateString("en-GB", {
-  //         day: "numeric",
-  //         month: "short",
-  //         year: "numeric",
-  //       });
-
-  //   addApplication({
-  //     company: newApp.company,
-  //     role: newApp.role,
-  //     status: newApp.status,
-  //     appliedDate: formattedDate,
-  //   });
-
-  //   toast.success("Application added successfully");
-  // }
 
   function handleEditApplication(application: ApplicationType) {
     setEditingApplication(application);
@@ -89,6 +71,29 @@ function ApplicationsTable({
     );
   }
 
+  const totalPages = Math.ceil(filteredApplications.length/ITEMS_PER_PAGE);
+  const startIndex = (currentPage-1) * ITEMS_PER_PAGE;
+  const paginatedApplications = filteredApplications.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  )
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, statusFilter]);
+
+  useEffect(() => {
+    if(currentPage > totalPages && totalPages >0){
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages])
+
+  const handlePageChange = (page: number)=>{
+    if (page < 1 || page > totalPages) return;
+
+    setCurrentPage(page);
+  }
+
   return (
     <>
       <div className="rounded-xl border bg-white dark:bg-slate-900 p-6 shadow-sm">
@@ -100,7 +105,7 @@ function ApplicationsTable({
         </div>
 
         <div className="overflow-x-auto">
-          {filteredApplications.length === 0 ? (
+          {paginatedApplications.length === 0 ? (
             <EmptyState
               title="No applications yet"
               description="Get started by adding your first job application."
@@ -108,6 +113,7 @@ function ApplicationsTable({
               onClick={handleNewApplicationClick}
             />
           ) : (
+            <>
             <table className="w-full border-collapse">
               <thead>
                 <tr className="text-left">
@@ -130,7 +136,7 @@ function ApplicationsTable({
               </thead>
 
               <tbody>
-                {filteredApplications.map((application) => (
+                {paginatedApplications.map((application) => (
                   <tr
                     key={application.id}
                     className="border-t border-slate-200 dark:border-slate-700"
@@ -182,6 +188,18 @@ function ApplicationsTable({
                 ))}
               </tbody>
             </table>
+            <div className="mt-4 flex items-center justify-between">
+              <p className="text-sm text-slate-500 dark:text-slate-400">Page {currentPage} of {totalPages}</p>
+              <div className="flex gap-2">
+                <Button variant={"outline"} onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+                  Previous
+                </Button>
+                <Button variant={"outline"} onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+                  Next
+                </Button>
+              </div>
+            </div>
+            </>
           )}
         </div>
       </div>
@@ -191,7 +209,6 @@ function ApplicationsTable({
           setIsModalOpen(false);
           setEditingApplication(null);
         }}
-        // onSubmit={handleAddApplication}
         application={editingApplication}
       />
       <DeleteConfirmationDialog

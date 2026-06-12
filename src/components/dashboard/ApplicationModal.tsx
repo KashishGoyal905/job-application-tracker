@@ -49,7 +49,7 @@ function ApplicationModal({
       setStatus("Applied");
       setAppliedDate("");
     }
-  }, [application]);
+  }, [application, isOpen]);
 
   function handleModalSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
