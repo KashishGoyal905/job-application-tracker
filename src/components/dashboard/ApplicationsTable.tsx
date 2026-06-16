@@ -35,6 +35,7 @@ function ApplicationsTable({
     useState<ApplicationType | null>(null);
 
 
+  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
 
   function handleNewApplicationClick() {

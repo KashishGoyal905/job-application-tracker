@@ -7,6 +7,7 @@ import { useApplicationStore } from "@/store/applicationsStore";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { formatDate } from "@/utils/date";
+import { addApplicationSchema } from "@/lib/validations/applicationSchema";
 
 type ApplicationModalProps = {
   isOpen: boolean;
@@ -23,6 +24,10 @@ function ApplicationModal({
   const [role, setRole] = useState("");
   const [status, setStatus] = useState<ApplicationStatusType>("Applied");
   const [appliedDate, setAppliedDate] = useState("");
+
+  // form data error state
+  const [errors, setErrors] = useState<{ company?: string, role?: string, status?: string, appliedDate?: string }>({});
+
 
   const editApplication = useApplicationStore((state) => state.editApplication);
   const addApplication = useApplicationStore((state) => state.addApplication);
@@ -49,13 +54,24 @@ function ApplicationModal({
       setStatus("Applied");
       setAppliedDate("");
     }
+    setErrors({});
   }, [application, isOpen]);
 
   function handleModalSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!company.trim() || !role.trim() || !appliedDate.trim()) {
-      toast.error("Please fill all the required fields");
+    const validationResult = addApplicationSchema.safeParse({ company, role, status, appliedDate });
+
+    if (!validationResult.success) {
+      const fieldErrors = validationResult.error.flatten().fieldErrors;
+
+      setErrors({
+        company: fieldErrors.company?.[0],
+        role: fieldErrors.role?.[0],
+        status: fieldErrors.status?.[0],
+        appliedDate: fieldErrors.appliedDate?.[0],
+      })
+      // toast.error("Please fill all the fields");
       return;
     }
 
@@ -81,6 +97,8 @@ function ApplicationModal({
       toast.success(`${company} application updated successfully`);
     }
 
+    // reset errors
+    setErrors({});
     // Close modal
     onClose();
   }
@@ -118,9 +136,26 @@ function ApplicationModal({
               required
               placeholder="e.g. Google"
               value={company}
-              onChange={(e) => setCompany(e.target.value)}
-              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:border-indigo-400"
+              onChange={(e) => {
+                setCompany(e.target.value);
+
+                if (errors.company) {
+                  setErrors((prev) => (
+                    {
+                      ...prev, company: undefined,
+                    }
+                  ))
+                }
+
+              }}
+              className={errors.company
+                ? "w-full rounded-lg border-2 border-red-500 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-red-500 focus:ring-1 focus:ring-red-500 dark:border-red-700 dark:bg-slate-800 dark:text-white dark:focus:border-red-400"
+                : "w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:border-indigo-400"
+              }
             />
+            {errors.company && (
+              <p className="text-red-500 text-sm mt-1">{errors.company}</p>
+            )}
           </div>
 
           {/* Role */}
@@ -133,9 +168,24 @@ function ApplicationModal({
               required
               placeholder="e.g. Frontend Developer"
               value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:border-indigo-400"
+              onChange={(e) => {
+                setRole(e.target.value)
+                if (errors.role) {
+                  setErrors((prev) => (
+                    {
+                      ...prev, role: undefined,
+                    }
+                  ))
+                }
+              }}
+              className={errors.role
+                ? "w-full rounded-lg border-2 border-red-500 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-red-500 focus:ring-1 focus:ring-red-500 dark:border-red-700 dark:bg-slate-800 dark:text-white dark:focus:border-red-400"
+                : "w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:border-indigo-400"
+              }
             />
+            {errors.role && (
+              <p className="text-red-500 text-sm mt-1">{errors.role}</p>
+            )}
           </div>
 
           {/* Status Selection */}
@@ -189,9 +239,26 @@ function ApplicationModal({
               type="date"
               required
               value={appliedDate}
-              onChange={(e) => setAppliedDate(e.target.value)}
-              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:border-indigo-400"
+              onChange={(e) => {
+                setAppliedDate(e.target.value);
+
+                if (errors.appliedDate) {
+                  setErrors((prev) => (
+                    {
+                      ...prev, appliedDate: undefined,
+                    }
+                  ))
+                }
+
+              }}
+              className={errors.appliedDate
+                ? "w-full rounded-lg border-2 border-red-500 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-red-500 focus:ring-1 focus:ring-red-500 dark:border-red-700 dark:bg-slate-800 dark:text-white dark:focus:border-red-400"
+                : "w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:border-indigo-400"
+              }
             />
+            {errors.appliedDate && (
+              <p className="text-red-500 text-sm mt-1">{errors.appliedDate}</p>
+            )}
           </div>
 
           {/* Footer Actions */}
