@@ -20,13 +20,6 @@ function ApplicationsPage() {
     <DashboardLayout>
       <div className="space-y-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          {/* <input
-            type="text"
-            placeholder="Search company or role"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
-          /> */}
           <Input
             placeholder="Search company or role"
             value={searchQuery}
