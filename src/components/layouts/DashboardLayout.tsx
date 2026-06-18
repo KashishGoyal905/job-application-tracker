@@ -13,12 +13,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   return (
     <div className="flex">
-      <Sidebar
-        isOpen={isSidebarOpen}
-        onClose={() => setIsSidebarOpen(false)} />
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       <div className="flex flex-1 flex-col">
-        <Navbar
-          onMenuClick={() => setIsSidebarOpen(true)} />
+        <Navbar onMenuClick={() => setIsSidebarOpen(true)} />
         <main className="flex-1 p-6 min-h-screen bg-slate-100 dark:bg-slate-950">
           {children}
         </main>

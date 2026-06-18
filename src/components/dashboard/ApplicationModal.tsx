@@ -26,8 +26,12 @@ function ApplicationModal({
   const [appliedDate, setAppliedDate] = useState("");
 
   // form data error state
-  const [errors, setErrors] = useState<{ company?: string, role?: string, status?: string, appliedDate?: string }>({});
-
+  const [errors, setErrors] = useState<{
+    company?: string;
+    role?: string;
+    status?: string;
+    appliedDate?: string;
+  }>({});
 
   const editApplication = useApplicationStore((state) => state.editApplication);
   const addApplication = useApplicationStore((state) => state.addApplication);
@@ -60,7 +64,12 @@ function ApplicationModal({
   function handleModalSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const validationResult = addApplicationSchema.safeParse({ company, role, status, appliedDate });
+    const validationResult = addApplicationSchema.safeParse({
+      company,
+      role,
+      status,
+      appliedDate,
+    });
 
     if (!validationResult.success) {
       const fieldErrors = validationResult.error.flatten().fieldErrors;
@@ -70,7 +79,7 @@ function ApplicationModal({
         role: fieldErrors.role?.[0],
         status: fieldErrors.status?.[0],
         appliedDate: fieldErrors.appliedDate?.[0],
-      })
+      });
       // toast.error("Please fill all the fields");
       return;
     }
@@ -140,17 +149,16 @@ function ApplicationModal({
                 setCompany(e.target.value);
 
                 if (errors.company) {
-                  setErrors((prev) => (
-                    {
-                      ...prev, company: undefined,
-                    }
-                  ))
+                  setErrors((prev) => ({
+                    ...prev,
+                    company: undefined,
+                  }));
                 }
-
               }}
-              className={errors.company
-                ? "w-full rounded-lg border-2 border-red-500 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-red-500 focus:ring-1 focus:ring-red-500 dark:border-red-700 dark:bg-slate-800 dark:text-white dark:focus:border-red-400"
-                : "w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:border-indigo-400"
+              className={
+                errors.company
+                  ? "w-full rounded-lg border-2 border-red-500 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-red-500 focus:ring-1 focus:ring-red-500 dark:border-red-700 dark:bg-slate-800 dark:text-white dark:focus:border-red-400"
+                  : "w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:border-indigo-400"
               }
             />
             {errors.company && (
@@ -169,18 +177,18 @@ function ApplicationModal({
               placeholder="e.g. Frontend Developer"
               value={role}
               onChange={(e) => {
-                setRole(e.target.value)
+                setRole(e.target.value);
                 if (errors.role) {
-                  setErrors((prev) => (
-                    {
-                      ...prev, role: undefined,
-                    }
-                  ))
+                  setErrors((prev) => ({
+                    ...prev,
+                    role: undefined,
+                  }));
                 }
               }}
-              className={errors.role
-                ? "w-full rounded-lg border-2 border-red-500 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-red-500 focus:ring-1 focus:ring-red-500 dark:border-red-700 dark:bg-slate-800 dark:text-white dark:focus:border-red-400"
-                : "w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:border-indigo-400"
+              className={
+                errors.role
+                  ? "w-full rounded-lg border-2 border-red-500 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-red-500 focus:ring-1 focus:ring-red-500 dark:border-red-700 dark:bg-slate-800 dark:text-white dark:focus:border-red-400"
+                  : "w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:border-indigo-400"
               }
             />
             {errors.role && (
@@ -243,17 +251,16 @@ function ApplicationModal({
                 setAppliedDate(e.target.value);
 
                 if (errors.appliedDate) {
-                  setErrors((prev) => (
-                    {
-                      ...prev, appliedDate: undefined,
-                    }
-                  ))
+                  setErrors((prev) => ({
+                    ...prev,
+                    appliedDate: undefined,
+                  }));
                 }
-
               }}
-              className={errors.appliedDate
-                ? "w-full rounded-lg border-2 border-red-500 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-red-500 focus:ring-1 focus:ring-red-500 dark:border-red-700 dark:bg-slate-800 dark:text-white dark:focus:border-red-400"
-                : "w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:border-indigo-400"
+              className={
+                errors.appliedDate
+                  ? "w-full rounded-lg border-2 border-red-500 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-red-500 focus:ring-1 focus:ring-red-500 dark:border-red-700 dark:bg-slate-800 dark:text-white dark:focus:border-red-400"
+                  : "w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:border-indigo-400"
               }
             />
             {errors.appliedDate && (
