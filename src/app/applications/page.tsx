@@ -19,7 +19,7 @@ function ApplicationsPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-row gap-3 items-center justify-between">
           <Input
             placeholder="Search company or role"
             value={searchQuery}
@@ -28,7 +28,7 @@ function ApplicationsPage() {
           />
 
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[100px]">
+            <SelectTrigger className="max-w-lg md:w-[120px]">
               <SelectValue placeholder="All statuses" />
             </SelectTrigger>
             <SelectContent>
