@@ -1,4 +1,4 @@
-import Skeleton from "../shared/Skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useApplicationStore } from "@/store/applicationsStore";
 
 export default function ApplicationTableSkeleton() {

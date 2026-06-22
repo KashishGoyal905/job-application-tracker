@@ -127,79 +127,81 @@ function ApplicationsTable({
             />
           ) : (
             <>
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="text-left">
-                    <th className="pb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
-                      Company
-                    </th>
-                    <th className="pb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
-                      Role
-                    </th>
-                    <th className="pb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
-                      Status
-                    </th>
-                    <th className="pb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
-                      Applied
-                    </th>
-                    <th className="pb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {paginatedApplications.map((application) => (
-                    <tr
-                      key={application.id}
-                      className="border-t border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
-                    >
-                      <td className="py-4 font-medium text-slate-800 dark:text-white">
-                        {application.company}
-                      </td>
-                      <td className="py-4 text-slate-600 dark:text-slate-400">
-                        {application.role}
-                      </td>
-                      <td className="py-4">
-                        <span
-                          className={`rounded-full px-3 py-1 text-xs font-medium
-                        ${application.status === "Interview"
-                              ? "bg-yellow-100 text-yellow-700 border-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-400"
-                              : application.status === "Applied"
-                                ? "bg-blue-100 text-blue-700 border-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
-                                : application.status === "Offer"
-                                  ? "bg-green-100 text-green-700 border-green-600 dark:bg-green-900/20 dark:text-green-400"
-                                  : "bg-red-100 text-red-700 border-red-600 dark:bg-red-900/20 dark:text-red-400"
-                            }`}
-                        >
-                          {application.status === "Offer"
-                            ? "Offered"
-                            : application.status}
-                        </span>
-                      </td>
-                      <td className="py-4 text-slate-600 dark:text-slate-400">
-                        {application.appliedDate}
-                      </td>
-                      <td className="py-4">
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => handleEditApplication(application)}
-                            className="rounded-full cursor-pointer p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
-                          >
-                            <Pencil size={16} />
-                          </button>
-                          <button
-                            onClick={() => setApplicationToDelete(application)}
-                            className="rounded-full cursor-pointer p-2 text-red-500 transition hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
-                      </td>
+              <div className="hidden md:block">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="text-left">
+                      <th className="pb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
+                        Company
+                      </th>
+                      <th className="pb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
+                        Role
+                      </th>
+                      <th className="pb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
+                        Status
+                      </th>
+                      <th className="pb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
+                        Applied
+                      </th>
+                      <th className="pb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
+                        Actions
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+
+                  <tbody>
+                    {paginatedApplications.map((application) => (
+                      <tr
+                        key={application.id}
+                        className="border-t border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                      >
+                        <td className="py-4 font-medium text-slate-800 dark:text-white">
+                          {application.company}
+                        </td>
+                        <td className="py-4 text-slate-600 dark:text-slate-400">
+                          {application.role}
+                        </td>
+                        <td className="py-4">
+                          <span
+                            className={`rounded-full px-3 py-1 text-xs font-medium
+                        ${application.status === "Interview"
+                                ? "bg-yellow-100 text-yellow-700 border-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-400"
+                                : application.status === "Applied"
+                                  ? "bg-blue-100 text-blue-700 border-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
+                                  : application.status === "Offer"
+                                    ? "bg-green-100 text-green-700 border-green-600 dark:bg-green-900/20 dark:text-green-400"
+                                    : "bg-red-100 text-red-700 border-red-600 dark:bg-red-900/20 dark:text-red-400"
+                              }`}
+                          >
+                            {application.status === "Offer"
+                              ? "Offered"
+                              : application.status}
+                          </span>
+                        </td>
+                        <td className="py-4 text-slate-600 dark:text-slate-400">
+                          {application.appliedDate}
+                        </td>
+                        <td className="py-4">
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => handleEditApplication(application)}
+                              className="rounded-full cursor-pointer p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+                            >
+                              <Pencil size={16} />
+                            </button>
+                            <button
+                              onClick={() => setApplicationToDelete(application)}
+                              className="rounded-full cursor-pointer p-2 text-red-500 transition hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
               <div className="mt-6 flex justify-center">
                 <Pagination>
                   <PaginationContent>
