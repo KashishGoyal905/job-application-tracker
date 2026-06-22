@@ -18,6 +18,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "../ui/pagination";
+import ApplicationTableSkeleton from "./ApplicationTableSkeleton";
 
 type AppliationTableProps = {
   searchQuery: string;
@@ -34,6 +35,9 @@ function ApplicationsTable({
   const deleteApplication = useApplicationStore(
     (state) => state.deleteApplication,
   );
+
+  // for skeletons
+  const [isLoading, setIsLoading] = useState(true);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [applicationToDelete, setApplicationToDelete] =
@@ -97,6 +101,17 @@ function ApplicationsTable({
       setCurrentPage(totalPages);
     }
   }, [currentPage, totalPages]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <ApplicationTableSkeleton />
+  }
 
   return (
     <>
@@ -173,15 +188,14 @@ function ApplicationsTable({
                         <td className="py-4">
                           <span
                             className={`rounded-full px-3 py-1 text-xs font-medium
-                        ${
-                          application.status === "Interview"
-                            ? "bg-yellow-100 text-yellow-700 border-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-400"
-                            : application.status === "Applied"
-                              ? "bg-blue-100 text-blue-700 border-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
-                              : application.status === "Offer"
-                                ? "bg-green-100 text-green-700 border-green-600 dark:bg-green-900/20 dark:text-green-400"
-                                : "bg-red-100 text-red-700 border-red-600 dark:bg-red-900/20 dark:text-red-400"
-                        }`}
+                        ${application.status === "Interview"
+                                ? "bg-yellow-100 text-yellow-700 border-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-400"
+                                : application.status === "Applied"
+                                  ? "bg-blue-100 text-blue-700 border-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
+                                  : application.status === "Offer"
+                                    ? "bg-green-100 text-green-700 border-green-600 dark:bg-green-900/20 dark:text-green-400"
+                                    : "bg-red-100 text-red-700 border-red-600 dark:bg-red-900/20 dark:text-red-400"
+                              }`}
                           >
                             {application.status === "Offer"
                               ? "Offered"
@@ -223,21 +237,20 @@ function ApplicationsTable({
                     className="rounded-xl border shadow-sm hover:shadow-md transition-all bg-white dark:bg-slate-900 p-4 shadow-sm border-slate-200 dark:border-slate-700 transition-colors"
                   >
                     <div className="space-y-3">
-                      <div className="flex justify-between">
+                      <div className="flex items-center justify-between">
                         <h3 className="font-semibold text-slate-800 dark:text-white">
                           {application.company}
                         </h3>
                         <span
                           className={`rounded-full px-3 py-1 text-xs font-medium
-                        ${
-                          application.status === "Interview"
-                            ? "bg-yellow-100 text-yellow-700 border-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-400"
-                            : application.status === "Applied"
-                              ? "bg-blue-100 text-blue-700 border-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
-                              : application.status === "Offer"
-                                ? "bg-green-100 text-green-700 border-green-600 dark:bg-green-900/20 dark:text-green-400"
-                                : "bg-red-100 text-red-700 border-red-600 dark:bg-red-900/20 dark:text-red-400"
-                        }`}
+                        ${application.status === "Interview"
+                              ? "bg-yellow-100 text-yellow-700 border-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-400"
+                              : application.status === "Applied"
+                                ? "bg-blue-100 text-blue-700 border-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
+                                : application.status === "Offer"
+                                  ? "bg-green-100 text-green-700 border-green-600 dark:bg-green-900/20 dark:text-green-400"
+                                  : "bg-red-100 text-red-700 border-red-600 dark:bg-red-900/20 dark:text-red-400"
+                            }`}
                         >
                           {application.status === "Offer"
                             ? "Offered"
@@ -271,6 +284,7 @@ function ApplicationsTable({
                   </div>
                 ))}
               </div>
+
               {/* Pagination */}
               <div className="mt-6 flex justify-center">
                 <Pagination>
@@ -331,9 +345,11 @@ function ApplicationsTable({
                   </PaginationContent>
                 </Pagination>
               </div>
+
             </>
           )}
         </div>
+
       </div>
       <ApplicationModal
         isOpen={isModalOpen}
