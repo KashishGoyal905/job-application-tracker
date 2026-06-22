@@ -2,6 +2,7 @@
 
 import ApplicationsTable from "@/components/dashboard/ApplicationsTable";
 import ApplicationTableSkeleton from "@/components/dashboard/ApplicationTableSkeleton";
+import QuickActions from "@/components/dashboard/QuickActions";
 import StatsCard from "@/components/dashboard/StatsCard";
 import StatsCardSkeleton from "@/components/dashboard/StatsCardSkeleton";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
@@ -59,7 +60,6 @@ export default function Home() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-
         {/* Cards */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
           {isLoading ? (
@@ -80,6 +80,9 @@ export default function Home() {
             ))
           )}
         </div>
+
+        {/* Quick Actions */}
+        <QuickActions />
 
         {/* Applications */}
         {/* <div>
