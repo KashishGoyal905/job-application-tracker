@@ -3,6 +3,7 @@
 import ApplicationsTable from "@/components/dashboard/ApplicationsTable";
 import ApplicationTableSkeleton from "@/components/dashboard/ApplicationTableSkeleton";
 import QuickActions from "@/components/dashboard/QuickActions";
+import RecentApplications from "@/components/dashboard/RecentApplications";
 import StatsCard from "@/components/dashboard/StatsCard";
 import StatsCardSkeleton from "@/components/dashboard/StatsCardSkeleton";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
@@ -84,13 +85,13 @@ export default function Home() {
         {/* Quick Actions */}
         <QuickActions />
 
-        {/* Applications */}
-        {/* <div>
+        {/* Recent Applications */}
+        <div>
           {isLoading ?
-           <ApplicationTableSkeleton />
+            <ApplicationTableSkeleton />
             :
-            <ApplicationsTable />}
-        </div> */}
+            <RecentApplications />}
+        </div>
       </div>
     </DashboardLayout>
   );
