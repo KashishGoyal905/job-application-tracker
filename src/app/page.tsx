@@ -5,7 +5,7 @@ import ApplicationTableSkeleton from "@/components/dashboard/ApplicationTableSke
 import QuickActions from "@/components/dashboard/QuickActions";
 import RecentApplications from "@/components/dashboard/RecentApplications";
 import StatsCard from "@/components/dashboard/StatsCard";
-import StatsCardSkeleton from "@/components/dashboard/StatsCardSkeleton";
+import StatsCardSkeleton from "@/skeletons/StatsCardSkeleton";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { useApplicationStore } from "@/store/applicationsStore";
 import { useEffect, useState } from "react";
@@ -86,12 +86,13 @@ export default function Home() {
         <QuickActions />
 
         {/* Recent Applications */}
-        <div>
+        {/* <div>
           {isLoading ?
             <ApplicationTableSkeleton />
             :
             <RecentApplications />}
-        </div>
+            </div> */}
+        <RecentApplications />
       </div>
     </DashboardLayout>
   );
