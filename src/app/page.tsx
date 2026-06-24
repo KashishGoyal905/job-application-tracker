@@ -9,6 +9,8 @@ import StatsCardSkeleton from "@/skeletons/StatsCardSkeleton";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { useApplicationStore } from "@/store/applicationsStore";
 import { useEffect, useState } from "react";
+import ApplicationStatusBarChart from "@/components/charts/ApplicationStatusBarChart";
+import ApplicationStatusPieChart from "@/components/charts/ApplicationStatusPieChart";
 
 export default function Home() {
   const applications = useApplicationStore((state) => state.applications);
@@ -51,6 +53,14 @@ export default function Home() {
     },
   ];
 
+  // Data for the charts
+  const chartsApplicationsStatusData = [
+    { status: "Interview", count: interviews },
+    { status: "Applied", count: applied },
+    { status: "Offer", count: offer },
+    { status: "Rejected", count: rejected },
+  ]
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -82,17 +92,20 @@ export default function Home() {
           )}
         </div>
 
+        {/* Charts */}
+        <div className="rounded-xl border bg-white dark:bg-slate-900 p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <ApplicationStatusBarChart chartData={chartsApplicationsStatusData} />
+          <ApplicationStatusPieChart chartData={chartsApplicationsStatusData} />
+        </div>
+
         {/* Quick Actions */}
         <QuickActions />
 
+
+
         {/* Recent Applications */}
-        {/* <div>
-          {isLoading ?
-            <ApplicationTableSkeleton />
-            :
-            <RecentApplications />}
-            </div> */}
         <RecentApplications />
+
       </div>
     </DashboardLayout>
   );
