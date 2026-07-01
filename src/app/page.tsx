@@ -1,7 +1,5 @@
 "use client";
 
-import ApplicationsTable from "@/components/dashboard/ApplicationsTable";
-import ApplicationTableSkeleton from "@/components/dashboard/ApplicationTableSkeleton";
 import QuickActions from "@/components/dashboard/QuickActions";
 import RecentApplications from "@/components/dashboard/RecentApplications";
 import StatsCard from "@/components/dashboard/StatsCard";
@@ -11,6 +9,7 @@ import { useApplicationStore } from "@/store/applicationsStore";
 import { useEffect, useState } from "react";
 import ApplicationStatusBarChart from "@/components/charts/ApplicationStatusBarChart";
 import ApplicationStatusPieChart from "@/components/charts/ApplicationStatusPieChart";
+import ApplicationsLineChart from "@/components/charts/ApplicationsLineChart";
 
 export default function Home() {
   const applications = useApplicationStore((state) => state.applications);
@@ -61,6 +60,26 @@ export default function Home() {
     { status: "Rejected", count: rejected },
   ]
 
+  // Data for the line Chart
+  const monthlyApplications: Record<string, number> = {};
+  applications.forEach((application) => {
+    const date = new Date(application.appliedDate);
+    if (!isNaN(date.getTime())) {
+      const month = date.toLocaleString("default", { month: "short" });
+      monthlyApplications[month] = (monthlyApplications[month] || 0) + 1;
+    }
+  });
+
+  const monthOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const monthlyApplicationsData = Object.keys(monthlyApplications)
+    .sort((a, b) => monthOrder.indexOf(a) - monthOrder.indexOf(b))
+    .map((month) => ({
+      month,
+      applications: monthlyApplications[month],
+    }));
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -94,7 +113,7 @@ export default function Home() {
 
         {/* Charts */}
         <div className="rounded-xl border bg-white dark:bg-slate-900 p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <ApplicationStatusBarChart chartData={chartsApplicationsStatusData} />
+          <ApplicationsLineChart chartData={monthlyApplicationsData} />
           <ApplicationStatusPieChart chartData={chartsApplicationsStatusData} />
         </div>
 
