@@ -54,10 +54,10 @@ export default function Home() {
 
   // Data for the charts
   const chartsApplicationsStatusData = [
-    { status: "Interview", count: interviews },
-    { status: "Applied", count: applied },
-    { status: "Offer", count: offer },
-    { status: "Rejected", count: rejected },
+    { status: "Interview", count: interviews, fill: "var(--chart-2)" },
+    { status: "Applied", count: applied, fill: "var(--chart-3)" },
+    { status: "Offer", count: offer, fill: "var(--chart-4)" },
+    { status: "Rejected", count: rejected, fill: "var(--chart-1)" },
   ]
 
   // Data for the line Chart
@@ -112,7 +112,7 @@ export default function Home() {
         </div>
 
         {/* Charts */}
-        <div className="rounded-xl border bg-white dark:bg-slate-900 p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <ApplicationsLineChart chartData={monthlyApplicationsData} />
           <ApplicationStatusPieChart chartData={chartsApplicationsStatusData} />
         </div>

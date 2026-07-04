@@ -1,43 +1,43 @@
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
+import { Pie, PieChart } from "recharts"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
+import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "../ui/chart";
+import { chartConfig } from "./configs/applicationStatusPieChartConfig";
+
 
 type ApplicationStatusPieChartProps = {
     chartData: { status: string, count: number }[],
 }
 
-const COLORS = [
-    "#3b82f6",
-    "#f59e0b",
-    "#22c55e",
-    "#ef4444",
-];
-
 export default function ApplicationStatusPieChart({ chartData }: ApplicationStatusPieChartProps) {
     return (
-        <div className="h-[350px] rounded-xl border bg-white dark:bg-slate-900 p-6">
-            <h2 className="mb-2 font-semibold text-slate-800 dark:text-white">Application Status</h2>
-            {/* plotting */}
-            <ResponsiveContainer width="100%" height={300} >
-                <PieChart data={chartData}>
-                    <Pie
-                        data={chartData}
-                        dataKey="count"
-                        nameKey="status"
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={100}
-                        fill={COLORS[0]}
-                        label
-                    >
-                        {chartData.map((_, index) => (
-                            <Cell
-                                key={index}
-                                fill={COLORS[index % COLORS.length]}
-                            />
-                        ))}
-                    </Pie>
-                    <Tooltip />
-                </PieChart>
-            </ResponsiveContainer>
-        </div>
+        <Card className="w-full rounded-xl border bg-white dark:bg-slate-900 p-4">
+            <CardHeader>
+                <CardTitle>Applications by Status</CardTitle>
+                <CardDescription>Distribution of your job applications</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <ChartContainer config={chartConfig}>
+                    <PieChart>
+                        <ChartTooltip
+                            cursor={true}
+                            content={<ChartTooltipContent hideLabel />}
+                        />
+                        <Pie
+                            data={chartData}
+                            dataKey="count"
+                            nameKey="status"
+                            innerRadius={50}
+                            stroke="hsl(var(--background))"
+                            labelLine={false}
+                            outerRadius={80}
+                        />
+                        <ChartLegend
+                            content={<ChartLegendContent nameKey="status" />}
+                            className="-translate-y-2 flex gap-1 *:basis-1/4 *:justify-center"
+                        />
+                    </PieChart>
+                </ChartContainer>
+            </CardContent>
+        </Card>
     )
 }
