@@ -32,7 +32,13 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <ThemeProvider>{children}</ThemeProvider>
-        <Toaster richColors/>
+        <Toaster
+          richColors
+          position="top-center"
+          toastOptions={{
+            duration: 3000,
+            className: 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700',
+          }} />
       </body>
     </html>
   );

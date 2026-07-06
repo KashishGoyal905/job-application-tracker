@@ -3,6 +3,7 @@
 import {
   BriefcaseBusiness,
   CalendarDays,
+  FileText,
   LayoutDashboard,
   Settings,
 } from "lucide-react";
@@ -24,6 +25,11 @@ const navItems = [
     title: "Interviews",
     href: "/interviews",
     icon: CalendarDays,
+  },
+  {
+    title: "Resume",
+    href: "/resume",
+    icon: FileText,
   },
   {
     title: "Settings",
@@ -50,7 +56,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           onClick={onClose}
         />
       )}
-      
+
       {/* aside is just a wrapper for better undestanding. It is same like div, section. Here we are using it for semantic purposes */}
       <aside
         // This is a conditional class name
@@ -60,16 +66,14 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
  ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 md:static md:min-h-screen`}>
 
 
-        {/* This is the logo */}
+        {/* logo */}
         <div className="p-6">
           <h1 className="text-2xl font-bold">JobTracker</h1>
         </div>
 
         {/* Navigation bar */}
         <nav className="flex flex-col gap-2 px-4">
-          {/* Iterating through the navItems array and rendering the Link component for each item */}
           {navItems.map((item) => {
-            // Destructuring the Icon component from the item object
             const Icon = item.icon;
 
             return (

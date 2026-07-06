@@ -13,13 +13,7 @@ export default function QuickActions() {
         Quick Actions
       </h2>
       <div className="grid gap-4 md:grid-cols-3">
-        <Button
-          // onClick={onAddApplication}
-          className="h-18 flex-col items-center justify-center gap-2"
-        >
-          <BriefcaseBusiness size={22} />
-          Add Application
-        </Button>
+
         <Button
           variant={"outline"}
           className="h-18 flex-col items-center justify-center gap-2 cursor-pointer"
@@ -27,6 +21,13 @@ export default function QuickActions() {
         >
           <CalendarDays size={22} />
           Schedule Interview
+        </Button>
+        <Button
+          // onClick={onAddApplication}
+          className="h-18 flex-col items-center justify-center gap-2"
+        >
+          <BriefcaseBusiness size={22} />
+          Add Application
         </Button>
         <Button
           variant={"outline"}

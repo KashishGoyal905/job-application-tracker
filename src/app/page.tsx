@@ -7,7 +7,6 @@ import StatsCardSkeleton from "@/skeletons/StatsCardSkeleton";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { useApplicationStore } from "@/store/applicationsStore";
 import { useEffect, useState } from "react";
-import ApplicationStatusBarChart from "@/components/charts/ApplicationStatusBarChart";
 import ApplicationStatusPieChart from "@/components/charts/ApplicationStatusPieChart";
 import ApplicationsLineChart from "@/components/charts/ApplicationsLineChart";
 
@@ -91,7 +90,7 @@ export default function Home() {
     <DashboardLayout>
       <div className="space-y-6">
         {/* Cards */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-2 xl:grid-cols-5">
           {isLoading ? (
             <>
               <StatsCardSkeleton />
