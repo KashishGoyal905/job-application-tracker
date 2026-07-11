@@ -25,7 +25,7 @@ function ApplicationModal({
   const [status, setStatus] = useState<ApplicationStatusType>("Applied");
   const [appliedDate, setAppliedDate] = useState("");
 
-  // form data error state
+  // form data error state for zod
   const [errors, setErrors] = useState<{
     company?: string;
     role?: string;
@@ -33,9 +33,11 @@ function ApplicationModal({
     appliedDate?: string;
   }>({});
 
-  const editApplication = useApplicationStore((state) => state.editApplication);
-  const addApplication = useApplicationStore((state) => state.addApplication);
+  // const editApplication = useApplicationStore((state) => state.editApplication);
+  // const addApplication = useApplicationStore((state) => state.addApplication);
+  const { editApplication, addApplication } = useApplicationStore();
 
+  // to fill the data if we have application otherwise clear the data.
   useEffect(() => {
     if (application) {
       setCompany(application.company);
@@ -58,13 +60,20 @@ function ApplicationModal({
       setStatus("Applied");
       setAppliedDate("");
     }
+
+    // reseting errors also if we open and close modal without submitting anything, we still want to start from a fresh state
     setErrors({});
-  }, [application, isOpen]);
+  }, [application, isOpen]); // isOpen is important if we don't use it then we face a bug
+  // BUG: without it, supoose we click add new button (application: null, modal: open)
+  //  -> we fill some thing and click cancels (appliaction: null, modal:false) but state inside modal is still holding our added values
+  // -> now if we again open it (applicaiton: null, modal: open) now since we only had application dependency and it is still same as null, our useEffect will not be called therefore we will still see the last added values instead of fresh new application modal
+
 
   function handleModalSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const validationResult = addApplicationSchema.safeParse({
+    // zod validation
+    const validationResult = addApplicationSchema.safeParse({ // safeParse() return object with values as success: boolean and data: T or error: ZodError
       company,
       role,
       status,
@@ -74,6 +83,7 @@ function ApplicationModal({
     if (!validationResult.success) {
       const fieldErrors = validationResult.error.flatten().fieldErrors;
 
+      // setting error state
       setErrors({
         company: fieldErrors.company?.[0],
         role: fieldErrors.role?.[0],
@@ -147,7 +157,7 @@ function ApplicationModal({
               value={company}
               onChange={(e) => {
                 setCompany(e.target.value);
-
+                // if we start typing again, errors will be removed until you submit again and it fails
                 if (errors.company) {
                   setErrors((prev) => ({
                     ...prev,

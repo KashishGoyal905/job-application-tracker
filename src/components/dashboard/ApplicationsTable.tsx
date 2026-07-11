@@ -1,18 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import ApplicationModal from "./ApplicationModal";
+import ApplicationModal from "../applications/ApplicationModal";
 import { useApplicationStore } from "@/store/applicationsStore";
 import { ApplicationType } from "@/types/application";
 import EmptyState from "../shared/EmptyState";
-import { Pencil, PencilIcon, Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import DeleteConfirmationDialog from "../dialogs/DeleteConfirmationDialog";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -39,6 +38,7 @@ function ApplicationsTable({
   // for skeletons
   const [isLoading, setIsLoading] = useState(true);
 
+  // Modal related
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [applicationToDelete, setApplicationToDelete] =
     useState<ApplicationType | null>(null);
@@ -48,27 +48,30 @@ function ApplicationsTable({
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
 
+  // To create a new application
   function handleNewApplicationClick() {
     setEditingApplication(null);
     setIsModalOpen(true);
   }
 
+  // To edit a existing application
   function handleEditApplication(application: ApplicationType) {
     setEditingApplication(application);
     setIsModalOpen(true);
   }
 
+  // To delete a application
   function handleDeleteApplicationConfirm() {
     if (!applicationToDelete) return;
     deleteApplication(applicationToDelete.id);
     toast.success(`Deleted ${applicationToDelete.company} successfully`);
     setApplicationToDelete(null);
   }
-
   function handleDeleteApplicationCancel() {
     setApplicationToDelete(null);
   }
 
+  // calculating applications based on search query and filter
   let searchApplications = applications;
   if (searchQuery !== "") {
     searchApplications = applications.filter(
@@ -85,6 +88,7 @@ function ApplicationsTable({
     );
   }
 
+  // calculating no. applications per page
   const totalPages = Math.ceil(filteredApplications.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedApplications = filteredApplications.slice(
@@ -92,10 +96,12 @@ function ApplicationsTable({
     startIndex + ITEMS_PER_PAGE,
   );
 
+  // for edge cases like u delete the only row entry from the last page
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, statusFilter]);
 
+  // for edge cases like u delete the last page completely
   useEffect(() => {
     if (currentPage > totalPages && totalPages > 0) {
       setCurrentPage(totalPages);
@@ -109,6 +115,7 @@ function ApplicationsTable({
     return () => clearTimeout(timer);
   }, []);
 
+  // skeletons
   if (isLoading) {
     return <ApplicationTableSkeleton />
   }
@@ -207,12 +214,14 @@ function ApplicationsTable({
                         </td>
                         <td className="py-4">
                           <div className="flex items-center gap-2">
+                            {/* Edit */}
                             <button
                               onClick={() => handleEditApplication(application)}
                               className="rounded-full cursor-pointer p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
                             >
                               <Pencil size={16} />
                             </button>
+                            {/* Delete */}
                             <button
                               onClick={() =>
                                 setApplicationToDelete(application)
@@ -237,6 +246,7 @@ function ApplicationsTable({
                     className="rounded-xl border shadow-sm hover:shadow-md transition-all bg-white dark:bg-slate-900 p-4 shadow-sm border-slate-200 dark:border-slate-700 transition-colors"
                   >
                     <div className="space-y-3">
+                      {/* Info col-1 */}
                       <div className="flex items-center justify-between">
                         <h3 className="font-semibold text-slate-800 dark:text-white">
                           {application.company}
@@ -257,6 +267,7 @@ function ApplicationsTable({
                             : application.status}
                         </span>
                       </div>
+                      {/* Info col-2 */}
                       <div className="flex items-center justify-between">
                         <p className="text-md text-slate-500 dark:text-slate-400">
                           {application.role}
@@ -266,7 +277,8 @@ function ApplicationsTable({
                           {application.appliedDate}
                         </span>
                       </div>
-                      <div className="flex justify-between gap-2 border-t pt-3">
+                      {/* Actions */}
+                      <div className="flex justify-between border-t pt-1">
                         <button
                           onClick={() => handleEditApplication(application)}
                           className="rounded-full cursor-pointer p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
@@ -289,6 +301,8 @@ function ApplicationsTable({
               <div className="mt-6 flex justify-center">
                 <Pagination>
                   <PaginationContent>
+
+                    {/* Prebious Icon */}
                     <PaginationItem>
                       <PaginationPrevious
                         href="#"
@@ -305,6 +319,8 @@ function ApplicationsTable({
                         }}
                       ></PaginationPrevious>
                     </PaginationItem>
+
+                    {/* Numbres */}
                     {Array.from({ length: totalPages }).map((_, index) => {
                       const pageNumber = index + 1;
                       return (
@@ -323,9 +339,7 @@ function ApplicationsTable({
                       );
                     })}
 
-                    {/* <PaginationItem>
-                      <PaginationEllipsis />
-                    </PaginationItem> */}
+                    {/* Next Icon */}
                     <PaginationItem>
                       <PaginationNext
                         href="#"
@@ -342,6 +356,7 @@ function ApplicationsTable({
                         }}
                       ></PaginationNext>
                     </PaginationItem>
+
                   </PaginationContent>
                 </Pagination>
               </div>
@@ -351,6 +366,7 @@ function ApplicationsTable({
         </div>
 
       </div>
+      {/* To edit & Add new application */}
       <ApplicationModal
         isOpen={isModalOpen}
         onClose={() => {
@@ -359,6 +375,7 @@ function ApplicationsTable({
         }}
         application={editingApplication}
       />
+      {/* To delete an application */}
       <DeleteConfirmationDialog
         isOpen={!!applicationToDelete}
         onClose={handleDeleteApplicationCancel}
