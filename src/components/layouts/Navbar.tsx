@@ -21,9 +21,9 @@ type NavbarProps = {
 function Navbar({ onMenuClick }: NavbarProps) {
   const pathname = usePathname();
   const currentTitle = pageTitles[pathname] || "Dashboard";
-  
+
   return (
-    <header className="flex items-center justify-between border-b bg-white dark:bg-slate-900 px-6 py-4">
+    <header className="sticky top-0 z-10 flex items-center justify-between border-b bg-white dark:bg-slate-900 px-6 py-4">
       {/* Left Side*/}
       <div className="flex items-start gap-3">
         <Button onClick={onMenuClick}

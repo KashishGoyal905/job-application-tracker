@@ -62,8 +62,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         // This is a conditional class name
         // if isOpen is true, then the class "translate-x-0" is applied
         // if isOpen is false, then the class "-translate-x-full" is applied
-        className={`fixed left-0 top-0 z-50 h-screen w-64 border-r bg-white text-slate-800 dark:bg-slate-900 dark:text-white transform transition-transform duration-300
- ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 md:static md:min-h-screen`}>
+        className={`fixed left-0 top-0 z-50 h-full w-64 border-r bg-white text-slate-800 dark:bg-slate-900 dark:text-white transition-transform duration-300
+ ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 md:static`}>
 
 
         {/* logo */}

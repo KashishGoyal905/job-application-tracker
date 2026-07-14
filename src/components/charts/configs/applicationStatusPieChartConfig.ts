@@ -11,8 +11,8 @@ export const chartConfig = {
         color: "var(--chart-3)",
     },
 
-    Offered: { // these fields should match the data passed to the chart.
-        label: "Offer",
+    Offer: { // these fields should match the data passed to the chart.
+        label: "Offered",
         color: "var(--chart-4)",
     },
 
