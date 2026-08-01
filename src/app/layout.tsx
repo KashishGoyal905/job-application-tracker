@@ -31,8 +31,16 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <ThemeProvider>{children}</ThemeProvider>
-        <Toaster richColors/>
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
+        <Toaster
+          richColors
+          position="top-center"
+          toastOptions={{
+            duration: 3000,
+            className: 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700',
+          }} />
       </body>
     </html>
   );

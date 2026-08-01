@@ -10,54 +10,9 @@ type ApplicationStore = {
     getApplication: (id: number) => ApplicationType | undefined;
 }
 
-// const dummyApplications: ApplicationType[] = [
-//     {
-//         id: 1,
-//         company: "Google",
-//         role: "Frontend Developer",
-//         status: "Interview" as const,
-//         appliedDate: "12 May 2026",
-//     },
-//     {
-//         id: 2,
-//         company: "Microsoft",
-//         role: "Frontend Developer",
-//         status: "Applied" as const,
-//         appliedDate: "12 May 2026",
-//     },
-//     {
-//         id: 3,
-//         company: "Netflix",
-//         role: "Frontend Developer",
-//         status: "Rejected" as const,
-//         appliedDate: "12 May 2026",
-//     },
-//     {
-//         id: 4,
-//         company: "Netflix",
-//         role: "Frontend Developer",
-//         status: "Rejected" as const,
-//         appliedDate: "12 May 2026",
-//     },
-//     {
-//         id: 5,
-//         company: "Netflix",
-//         role: "Frontend Developer",
-//         status: "Rejected" as const,
-//         appliedDate: "12 May 2026",
-//     },
-//     {
-//         id: 6,
-//         company: "Netflix",
-//         role: "Frontend Developer",
-//         status: "Rejected" as const,
-//         appliedDate: "12 May 2026",
-//     },
-// ];
-
-export const useApplicationStore = create<ApplicationStore>()(
+export const useApplicationStore = create<ApplicationStore>()( // create, creates a global store
     persist(
-        (set, get) => ({
+        (set, get) => ({ // set is used to update the state. get is used to get the current state inside the store itself.
             applications: [],
             addApplication: (application) => set((state) => ({
                 applications: [
@@ -68,9 +23,9 @@ export const useApplicationStore = create<ApplicationStore>()(
                     ...state.applications,
                 ]
             })),
-            editApplication: (id, application) => set((state) => ({
+            editApplication: (id, application) => set((state) => ({ // this method is prefered when new state depends on the previous state rather set({applications: [...]})
                 applications: state.applications.map((app) =>
-                    app.id === id ? { ...app, ...application } : app
+                    app.id === id ? { ...app, ...application } : app // spread synatx is used to create a new array
                 )
             })),
             deleteApplication: (id) => set((state) => ({

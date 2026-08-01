@@ -19,6 +19,8 @@ function ApplicationsPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
+        
+        {/* Searching & Filtering UI */}
         <div className="flex flex-row gap-3 items-center justify-between">
           <Input
             placeholder="Search company or role"
@@ -41,11 +43,12 @@ function ApplicationsPage() {
           </Select>
         </div>
 
-        {/* Table */}
+        {/* Main Table */}
         <ApplicationsTable
           searchQuery={searchQuery}
           statusFilter={statusFilter}
         />
+
       </div>
     </DashboardLayout>
   );

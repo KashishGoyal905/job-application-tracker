@@ -26,10 +26,9 @@ export default function DeleteConfirmationDialog({
     <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete {companyName} application?</AlertDialogTitle>
+          <AlertDialogTitle className="text-red-500">Delete Application?</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete {companyName}? This action cannot be
-            undone.
+            Are you sure you want to delete <span className="font-bold text-slate-900 dark:text-slate-100">{companyName}</span>? This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
