@@ -69,7 +69,7 @@ function ApplicationModal({
   // -> now if we again open it (applicaiton: null, modal: open) now since we only had application dependency and it is still same as null, our useEffect will not be called therefore we will still see the last added values instead of fresh new application modal
 
 
-  function handleModalSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleModalSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     // zod validation
@@ -94,7 +94,31 @@ function ApplicationModal({
       return;
     }
 
+    // if application doesn't exist then add it else edit it
     if (!application) {
+      const res = await fetch("/api/applications", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          company,
+          role,
+          status,
+          appliedDate: formatDate(appliedDate),
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        const error = await res.json();
+        toast.error(error.message);
+        return;
+      }
+
+      console.log(data);
+
       addApplication({
         company,
         role,
