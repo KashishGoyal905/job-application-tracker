@@ -30,13 +30,15 @@ function ApplicationsTable({
   searchQuery,
   statusFilter,
 }: AppliationTableProps) {
-  const applications = useApplicationStore((state) => state.applications);
+  // const applications = useApplicationStore((state) => state.applications); // replacing zustand with database
+  const [applications, setApplications] = useState<ApplicationType[]>([]);
+  // for skeletons
+  const [isLoading, setIsLoading] = useState(true);
+
   const deleteApplication = useApplicationStore(
     (state) => state.deleteApplication,
   );
 
-  // for skeletons
-  const [isLoading, setIsLoading] = useState(true);
 
   // Modal related
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -108,11 +110,35 @@ function ApplicationsTable({
     }
   }, [currentPage, totalPages]);
 
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     setIsLoading(false);
+  //   }, 1500);
+  //   return () => clearTimeout(timer);
+  // }, []); removed the fake one with the real one
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
-    return () => clearTimeout(timer);
+    async function getApplications() {
+      try {
+        setIsLoading(true);
+        const res = await fetch("/api/applications", {
+          cache: "no-store"
+        });
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch applications");
+        }
+
+        const data = await res.json();
+        setApplications(data.applications);
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to fetch applications");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    getApplications();
   }, []);
 
   // skeletons
