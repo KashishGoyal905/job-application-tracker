@@ -112,8 +112,7 @@ function ApplicationModal({
       const data = await res.json();
 
       if (!res.ok) {
-        const error = await res.json();
-        toast.error(error.message);
+        toast.error(data.message);
         return;
       }
 
