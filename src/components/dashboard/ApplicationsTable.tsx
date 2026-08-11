@@ -20,6 +20,9 @@ import {
 import ApplicationTableSkeleton from "./ApplicationTableSkeleton";
 
 type AppliationTableProps = {
+  applications: ApplicationType[];
+  isLoading: boolean;
+  error: Error | null | undefined;
   searchQuery: string;
   statusFilter: string;
 };
@@ -27,13 +30,16 @@ type AppliationTableProps = {
 const ITEMS_PER_PAGE = 5;
 
 function ApplicationsTable({
+  applications,
+  isLoading,
+  error,
   searchQuery,
   statusFilter,
 }: AppliationTableProps) {
   // const applications = useApplicationStore((state) => state.applications); // replacing zustand with database
-  const [applications, setApplications] = useState<ApplicationType[]>([]);
-  // for skeletons
-  const [isLoading, setIsLoading] = useState(true);
+  // const [applications, setApplications] = useState<ApplicationType[]>([]); -> moved to one level up
+  // for skeletons -> moved to one level up
+  // const [isLoading, setIsLoading] = useState(true);
 
   const deleteApplication = useApplicationStore(
     (state) => state.deleteApplication,
@@ -117,33 +123,41 @@ function ApplicationsTable({
   //   return () => clearTimeout(timer);
   // }, []); removed the fake one with the real one
 
-  useEffect(() => {
-    async function getApplications() {
-      try {
-        setIsLoading(true);
-        const res = await fetch("/api/applications", {
-          cache: "no-store"
-        });
+  // useEffect(() => {
+  //   async function getApplications() {
+  //     try {
+  //       setIsLoading(true);
+  //       const res = await fetch("/api/applications", {
+  //         cache: "no-store"
+  //       });
 
-        if (!res.ok) {
-          throw new Error("Failed to fetch applications");
-        }
+  //       if (!res.ok) {
+  //         throw new Error("Failed to fetch applications");
+  //       }
 
-        const data = await res.json();
-        setApplications(data.applications);
-      } catch (error) {
-        console.error(error);
-        toast.error("Failed to fetch applications");
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    getApplications();
-  }, []);
+  //       const data = await res.json();
+  //       setApplications(data.applications);
+  //     } catch (error) {
+  //       console.error(error);
+  //       toast.error("Failed to fetch applications");
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   }
+  //   getApplications();
+  // }, []);
 
   // skeletons
   if (isLoading) {
     return <ApplicationTableSkeleton />
+  }
+
+  if (error) {
+    return (
+      <div className="rounded-xl border p-6 text-center">
+        Failed to load applications.
+      </div>
+    );
   }
 
   return (
