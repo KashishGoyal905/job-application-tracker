@@ -18,6 +18,7 @@ function ApplicationsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
 
+  //  GET
   const {
     data: applications = [],
     isLoading,

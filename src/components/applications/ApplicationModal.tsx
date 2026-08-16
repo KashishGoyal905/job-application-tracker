@@ -8,6 +8,7 @@ import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { formatDate } from "@/utils/date";
 import { addApplicationSchema } from "@/lib/validations/applicationSchema";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type ApplicationModalProps = {
   isOpen: boolean;
@@ -68,6 +69,44 @@ function ApplicationModal({
   //  -> we fill some thing and click cancels (appliaction: null, modal:false) but state inside modal is still holding our added values
   // -> now if we again open it (applicaiton: null, modal: open) now since we only had application dependency and it is still same as null, our useEffect will not be called therefore we will still see the last added values instead of fresh new application modal
 
+  // POST
+  const queryClient = useQueryClient();
+
+  const createApplicationMutation = useMutation({
+    mutationFn: async (application: {
+      company: string;
+      role: string;
+      status: ApplicationStatusType;
+      appliedDate: string;
+    }) => {
+
+      const res = await fetch("/api/applications", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(application),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to add application");
+      }
+
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["applications"] });
+      setErrors({});
+      toast.success(`${company} application added successfully`);
+      onClose();
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to add application");
+    }
+  })
+
 
   async function handleModalSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -96,36 +135,14 @@ function ApplicationModal({
 
     // if application doesn't exist then add it else edit it
     if (!application) {
-      const res = await fetch("/api/applications", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          company,
-          role,
-          status,
-          appliedDate: formatDate(appliedDate),
-        }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        toast.error(data.message);
-        return;
-      }
-
-      console.log(data);
-
-      addApplication({
+      createApplicationMutation.mutate({
         company,
         role,
         status,
         appliedDate: formatDate(appliedDate),
       });
 
-      toast.success(`${company} application added successfully`);
+      return;
     } else {
       const updatedApplication = {
         company,
@@ -136,13 +153,15 @@ function ApplicationModal({
 
       editApplication(application.id, updatedApplication);
 
+      setErrors({});
       toast.success(`${company} application updated successfully`);
+      onClose();
     }
 
-    // reset errors
-    setErrors({});
-    // Close modal
-    onClose();
+    // // reset errors
+    // setErrors({});
+    // // Close modal
+    // onClose();
   }
 
   if (!isOpen) {
@@ -310,13 +329,15 @@ function ApplicationModal({
             >
               Cancel
             </button>
-            <Button type="submit" className="active:scale-[0.98] transition">
-              {application ? "Update Application" : "Add Application"}
+            <Button type="submit" className={`active:scale-[0.98] transition ${createApplicationMutation.isPending ? "disabled:opacity-50" : ""}`}>
+              {application ? "Update Application" : createApplicationMutation.isPending
+                ? "Adding..."
+                : "Add Application"}
             </Button>
           </div>
         </form>
       </div>
-    </div>
+    </div >
   );
 }
 
