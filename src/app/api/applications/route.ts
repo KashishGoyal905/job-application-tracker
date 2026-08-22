@@ -4,7 +4,29 @@ import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/primsa";
 
-// POST
+
+// GET
+export async function GET() {
+    const applications = await prisma.application.findMany({
+        where: {
+            userId: 1
+        },
+        orderBy: {
+            appliedDate: "desc"
+        }
+    });
+
+    return NextResponse.json(
+        {
+            applications,
+        },
+        {
+            status: 200,
+        }
+    )
+}
+
+// POST: to create our application
 export async function POST(request: Request) {
     try {
         // we can access the body using .json()
@@ -26,7 +48,7 @@ export async function POST(request: Request) {
             );
         }
 
-        // after validation, talk to MySQL through prisma
+        // after validation, talk to MySQL through prisma to create our application
         const application = await prisma.application.create({
             data: {
                 company: validation.data.company,
@@ -61,23 +83,5 @@ export async function POST(request: Request) {
 
 }
 
-// GET
-export async function GET() {
-    const applications = await prisma.application.findMany({
-        where: {
-            userId: 1
-        },
-        orderBy: {
-            appliedDate: "desc"
-        }
-    });
 
-    return NextResponse.json(
-        {
-            applications,
-        },
-        {
-            status: 200,
-        }
-    )
-}
+// DELETE: to delete our application
