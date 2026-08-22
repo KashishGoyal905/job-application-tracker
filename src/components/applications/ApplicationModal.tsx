@@ -69,9 +69,8 @@ function ApplicationModal({
   //  -> we fill some thing and click cancels (appliaction: null, modal:false) but state inside modal is still holding our added values
   // -> now if we again open it (applicaiton: null, modal: open) now since we only had application dependency and it is still same as null, our useEffect will not be called therefore we will still see the last added values instead of fresh new application modal
 
-  // POST
   const queryClient = useQueryClient();
-
+  // POST -> new application
   const createApplicationMutation = useMutation({
     mutationFn: async (application: {
       company: string;
@@ -106,7 +105,75 @@ function ApplicationModal({
       toast.error(error.message || "Failed to add application");
     }
   })
+  // Put -> update application
+  const updateApplicationMutation = useMutation({
+    mutationFn: async (application: {
+      id: number;
+      company: string;
+      role: string;
+      status: string;
+      appliedDate: string;
+    }) => {
+      const res = await fetch(`/api/applications/${application.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          company: application.company,
+          role: application.role,
+          status: application.status,
+          appliedDate: application.appliedDate,
+        }),
+      });
 
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to update application");
+      }
+
+      return data;
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["applications"],
+      });
+
+      setErrors({});
+      toast.success("Application updated successfully");
+      onClose();
+    },
+
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  // DELETE
+  const deleteApplicationMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const res = await fetch(`/api/applications/${id}`, {
+        method: "DELETE",
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to delete application");
+      }
+
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["applications"] });
+      toast.success("Application deleted successfully");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to delete application");
+    }
+  })
 
   async function handleModalSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -144,24 +211,14 @@ function ApplicationModal({
 
       return;
     } else {
-      const updatedApplication = {
+      updateApplicationMutation.mutate({
+        id: application.id,
         company,
         role,
         status,
         appliedDate: formatDate(appliedDate),
-      };
-
-      editApplication(application.id, updatedApplication);
-
-      setErrors({});
-      toast.success(`${company} application updated successfully`);
-      onClose();
+      });
     }
-
-    // // reset errors
-    // setErrors({});
-    // // Close modal
-    // onClose();
   }
 
   if (!isOpen) {
