@@ -6,6 +6,7 @@ type RouteContext = {
     params: Promise<{ id: string }>;
 };
 
+// Update
 export async function PUT(
     request: Request,
     { params }: RouteContext
@@ -65,6 +66,55 @@ export async function PUT(
         );
     } catch (error) {
         console.error("PUT /api/applications/[id] error:", error);
+
+        return NextResponse.json(
+            {
+                message: "Internal Server Error",
+            },
+            {
+                status: 500,
+            }
+        );
+    }
+}
+
+// Delete
+export async function DELETE(
+    request: Request,
+    { params }: RouteContext
+) {
+    try {
+        const { id } = await params;
+
+        const applicationId = Number(id);
+
+        if (Number.isNaN(applicationId)) {
+            return NextResponse.json(
+                {
+                    message: "Invalid application ID",
+                },
+                {
+                    status: 400,
+                }
+            );
+        }
+
+        await prisma.application.delete({
+            where: {
+                id: applicationId,
+            },
+        });
+
+        return NextResponse.json(
+            {
+                message: "Application deleted successfully",
+            },
+            {
+                status: 200,
+            }
+        );
+    } catch (error) {
+        console.error("DELETE /api/applications/[id] error:", error);
 
         return NextResponse.json(
             {

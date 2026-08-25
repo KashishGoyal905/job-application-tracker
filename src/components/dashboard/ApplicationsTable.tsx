@@ -18,6 +18,7 @@ import {
   PaginationPrevious,
 } from "../ui/pagination";
 import ApplicationTableSkeleton from "./ApplicationTableSkeleton";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type AppliationTableProps = {
   applications: ApplicationType[];
@@ -36,16 +37,6 @@ function ApplicationsTable({
   searchQuery,
   statusFilter,
 }: AppliationTableProps) {
-  // const applications = useApplicationStore((state) => state.applications); // replacing zustand with database
-  // const [applications, setApplications] = useState<ApplicationType[]>([]); -> moved to one level up
-  // for skeletons -> moved to one level up
-  // const [isLoading, setIsLoading] = useState(true);
-
-  const deleteApplication = useApplicationStore(
-    (state) => state.deleteApplication,
-  );
-
-
   // Modal related
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [applicationToDelete, setApplicationToDelete] =
@@ -69,12 +60,43 @@ function ApplicationsTable({
   }
 
   // To delete a application
+  const queryClient = useQueryClient();
+
+  const deleteApplicationMutation = useMutation({
+    mutationFn: async (applicationId: number) => {
+      const res = await fetch(`/api/applications/${applicationId}`, {
+        method: "DELETE",
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to delete application");
+      }
+
+      return data;
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["applications"],
+      });
+
+      toast.success("Application deleted successfully");
+      setApplicationToDelete(null);
+    },
+
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
   function handleDeleteApplicationConfirm() {
     if (!applicationToDelete) return;
-    deleteApplication(applicationToDelete.id);
-    toast.success(`Deleted ${applicationToDelete.company} successfully`);
-    setApplicationToDelete(null);
+    // deleteApplication(applicationToDelete.id); OLD
+    deleteApplicationMutation.mutate(applicationToDelete.id);
   }
+
   function handleDeleteApplicationCancel() {
     setApplicationToDelete(null);
   }
@@ -420,6 +442,7 @@ function ApplicationsTable({
         isOpen={!!applicationToDelete}
         onClose={handleDeleteApplicationCancel}
         onConfirm={handleDeleteApplicationConfirm}
+        isDeleting={deleteApplicationMutation.isPending}
         companyName={applicationToDelete?.company || ""}
       />
     </>
