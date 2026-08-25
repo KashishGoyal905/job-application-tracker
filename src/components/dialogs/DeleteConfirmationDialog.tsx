@@ -14,6 +14,7 @@ type DeleteConfirmationDialogProps = {
   onClose: () => void;
   onConfirm: () => void;
   companyName: string;
+  isDeleting?: boolean;
 };
 
 export default function DeleteConfirmationDialog({
@@ -21,6 +22,7 @@ export default function DeleteConfirmationDialog({
   onClose,
   onConfirm,
   companyName,
+  isDeleting,
 }: DeleteConfirmationDialogProps) {
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
@@ -35,9 +37,10 @@ export default function DeleteConfirmationDialog({
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={onConfirm}
-            className="bg-red-500 hover:bg-red-600"
+            disabled={isDeleting}
+            className={`bg-red-500 hover:bg-red-600 ${isDeleting ? "cursor-not-allowed opacity-50" : ""}`}
           >
-            Delete
+            {isDeleting ? "Deleting..." : "Delete"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
