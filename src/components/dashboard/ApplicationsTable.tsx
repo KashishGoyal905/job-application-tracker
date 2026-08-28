@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import ApplicationModal from "../applications/ApplicationModal";
-import { useApplicationStore } from "@/store/applicationsStore";
 import { ApplicationType } from "@/types/application";
 import EmptyState from "../shared/EmptyState";
 import { Pencil, Trash2 } from "lucide-react";
@@ -31,7 +30,7 @@ type AppliationTableProps = {
 const ITEMS_PER_PAGE = 5;
 
 function ApplicationsTable({
-  applications,
+  applications = [],
   isLoading,
   error,
   searchQuery,
@@ -102,9 +101,9 @@ function ApplicationsTable({
   }
 
   // calculating applications based on search query and filter
-  let searchApplications = applications;
+  let searchApplications = applications ?? [];
   if (searchQuery !== "") {
-    searchApplications = applications.filter(
+    searchApplications = (applications ?? []).filter(
       (app) =>
         app.company.toLowerCase().includes(searchQuery?.toLowerCase()) ||
         app.role.toLowerCase().includes(searchQuery?.toLowerCase()),
@@ -138,36 +137,6 @@ function ApplicationsTable({
     }
   }, [currentPage, totalPages]);
 
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     setIsLoading(false);
-  //   }, 1500);
-  //   return () => clearTimeout(timer);
-  // }, []); removed the fake one with the real one
-
-  // useEffect(() => {
-  //   async function getApplications() {
-  //     try {
-  //       setIsLoading(true);
-  //       const res = await fetch("/api/applications", {
-  //         cache: "no-store"
-  //       });
-
-  //       if (!res.ok) {
-  //         throw new Error("Failed to fetch applications");
-  //       }
-
-  //       const data = await res.json();
-  //       setApplications(data.applications);
-  //     } catch (error) {
-  //       console.error(error);
-  //       toast.error("Failed to fetch applications");
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   }
-  //   getApplications();
-  // }, []);
 
   // skeletons
   if (isLoading) {

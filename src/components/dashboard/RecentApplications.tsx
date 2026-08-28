@@ -1,27 +1,29 @@
-import { useApplicationStore } from "@/store/applicationsStore";
+"use client"
+
 import { Button } from "../ui/button";
 import Link from "next/link";
 import EmptyState from "../shared/EmptyState";
 import RecentApplicationsSkeleton from "@/skeletons/RecentApplicationsSkeleton";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 export default function RecentApplications() {
-  const [isLoading, setIsLoading] = useState(true);
-  const applications = useApplicationStore((state) => state.applications);
+  const { data, isLoading } = useQuery({
+    queryKey: ["applications"],
+    queryFn: async () => {
+      const res = await fetch("/api/applications");
+      if (!res.ok) {
+        throw new Error("Failed to fetch applications");
+      }
+      return res.json();
+    },
+  })
+  const applications = data?.applications ?? [];
   const recentApplications = [...applications]
     .sort(
       (a, b) =>
         new Date(b.appliedDate).getTime() - new Date(a.appliedDate).getTime(),
     )
     .slice(0, 5);
-  // const recentApplications = [];
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1800);
-    return () => clearTimeout(timer);
-  }, []);
 
   if (isLoading) {
     return <RecentApplicationsSkeleton />;

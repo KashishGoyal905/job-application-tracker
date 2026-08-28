@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { ApplicationStatusType, ApplicationType } from "@/types/application";
-import { useApplicationStore } from "@/store/applicationsStore";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { formatDate } from "@/utils/date";
@@ -33,10 +32,6 @@ function ApplicationModal({
     status?: string;
     appliedDate?: string;
   }>({});
-
-  // const editApplication = useApplicationStore((state) => state.editApplication);
-  // const addApplication = useApplicationStore((state) => state.addApplication);
-  const { editApplication, addApplication } = useApplicationStore();
 
   // to fill the data if we have application otherwise clear the data.
   useEffect(() => {
