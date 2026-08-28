@@ -5,27 +5,37 @@ import RecentApplications from "@/components/dashboard/RecentApplications";
 import StatsCard from "@/components/dashboard/StatsCard";
 import StatsCardSkeleton from "@/skeletons/StatsCardSkeleton";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import { useApplicationStore } from "@/store/applicationsStore";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import ApplicationStatusPieChart from "@/components/charts/ApplicationStatusPieChart";
 import ApplicationsLineChart from "@/components/charts/ApplicationsLineChart";
+import { useQuery } from "@tanstack/react-query";
+import { ApplicationType } from "@/types/application";
 
 export default function Home() {
-  const applications = useApplicationStore((state) => state.applications);
-  const [isLoading, setIsLoading] = useState(true);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["applications"],
+    queryFn: async () => {
+      const res = await fetch("/api/applications");
+      if (!res.ok) {
+        throw new Error("Failed to fetch applications");
+      }
+      return res.json();
+    },
+  })
+  const applications = data?.applications ?? [];
 
   const totalApplications = applications.length;
   const interviews = applications.filter(
-    (application) => application.status === "Interview",
+    (application: ApplicationType) => application.status === "Interview",
   ).length;
   const applied = applications.filter(
-    (application) => application.status === "Applied",
+    (application: ApplicationType) => application.status === "Applied",
   ).length;
   const offer = applications.filter(
-    (application) => application.status === "Offer",
+    (application: ApplicationType) => application.status === "Offer",
   ).length;
   const rejected = applications.filter(
-    (application) => application.status === "Rejected",
+    (application: ApplicationType) => application.status === "Rejected",
   ).length;
 
   const statsData = [
@@ -61,7 +71,7 @@ export default function Home() {
 
   // Data for the line Chart
   const monthlyApplications: Record<string, number> = {};
-  applications.forEach((application) => {
+  applications.forEach((application: ApplicationType) => {
     const date = new Date(application.appliedDate);
     if (!isNaN(date.getTime())) {
       const month = date.toLocaleString("default", { month: "short" });
@@ -78,13 +88,6 @@ export default function Home() {
       month,
       applications: monthlyApplications[month],
     }));
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     <DashboardLayout>

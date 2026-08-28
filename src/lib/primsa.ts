@@ -8,11 +8,13 @@ const globalForPrisma = globalThis as {
 };
 
 const adapter = new PrismaMariaDb({
-    host: "localhost",
+    host: "127.0.0.1",
     port: 3306,
     user: "root",
     password: "Kg@972804",
     database: "job_tracker",
+    allowPublicKeyRetrieval: true,
+    ssl: false,
 });
 
 export const prisma =
